@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "difference",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzysztofzablocki/Difference.git",
+      "state" : {
+        "revision" : "f627d00718033c3d7888acd5f4e3524a843db1cf",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "paltalib-swift-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Palta-Data-Platform/paltalib-swift-core.git",
+      "state" : {
+        "revision" : "af20ce307c8ef7c7baa3e38fe5b03e515032ba9c",
+        "version" : "3.0.0"
+      }
+    },
+    {
+      "identity" : "purchases-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios.git",
+      "state" : {
+        "revision" : "ef2e4eae17b856df75cf8dd648d346599d39f7db",
+        "version" : "4.17.5"
+      }
+    }
+  ],
+  "version" : 2
+}
