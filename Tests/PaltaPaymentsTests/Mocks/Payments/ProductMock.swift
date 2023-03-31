@@ -18,6 +18,7 @@ extension Product {
             currencyCode: nil,
             price: 0,
             localizedPriceString: "",
+            formatter: NumberFormatter(),
             subscriptionPeriod: nil,
             introductoryDiscount: nil,
             discounts: [],

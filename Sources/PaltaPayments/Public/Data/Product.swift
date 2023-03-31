@@ -48,6 +48,7 @@ public struct Product {
     public let currencyCode: String?
     public let price: Decimal
     public let localizedPriceString: String
+    public let formatter: NumberFormatter
     
     public let subscriptionPeriod: SubscriptionPeriod?
     public let introductoryDiscount: ProductDiscount?
@@ -82,15 +83,5 @@ extension Product: Hashable {
         discounts.forEach {
             $0.hashValue.hash(into: &hasher)
         }
-    }
-}
-
-public extension Product {
-    var formatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.currencyCode = currencyCode
-//        formatter.currencySymbol =
-        formatter.numberStyle = .currency
-        return formatter
     }
 }

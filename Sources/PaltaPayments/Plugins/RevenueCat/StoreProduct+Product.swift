@@ -10,6 +10,7 @@ import RevenueCat
 
 extension Product {
     init(rc: StoreProduct) {
+        rc.priceFormatter
         self.init(
             productType: ProductType(rc: rc.productType),
             productIdentifier: rc.productIdentifier,
@@ -18,6 +19,7 @@ extension Product {
             currencyCode: rc.currencyCode,
             price: rc.price,
             localizedPriceString: rc.localizedPriceString,
+            formatter: rc.priceFormatter ?? rc.fallbackFormatter,
             subscriptionPeriod: rc._subscriptionPeriod,
             introductoryDiscount: rc._introductoryDiscount,
             discounts: rc._discounts,
@@ -30,7 +32,6 @@ extension Product {
     }
 }
 
-@available(iOS 11.2, *)
 private extension StoreProduct {
     var _subscriptionPeriod: SubscriptionPeriod? {
         subscriptionPeriod.map {
@@ -43,7 +44,6 @@ private extension StoreProduct {
     }
 }
 
-@available(iOS 12.2, *)
 private extension StoreProduct {
     var _discounts: [ProductDiscount] {
         discounts.map(ProductDiscount.init)
@@ -89,5 +89,14 @@ private extension SubscriptionPeriod.Unit {
 extension SubscriptionPeriod {
     init(rc: RevenueCat.SubscriptionPeriod) {
         self.init(value: rc.value, unit: Unit(rc: rc.unit))
+    }
+}
+
+private extension StoreProduct {
+    var fallbackFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.currencyCode = currencyCode
+        formatter.numberStyle = .currency
+        return formatter
     }
 }
