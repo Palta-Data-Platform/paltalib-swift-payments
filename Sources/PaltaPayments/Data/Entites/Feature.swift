@@ -10,7 +10,7 @@ import Foundation
 struct Feature: Decodable, Equatable {
     let quantity: Int
     let actualFrom: Date
-    let actualTill: Date
+    let actualTill: Date?
     let feature: String
     let lastSubscriptionId: UUID?
 }
