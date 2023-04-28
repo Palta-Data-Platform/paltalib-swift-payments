@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                  = 'PaltaLibPurchases'
-  spec.version               = '3.3.0'
+  spec.version               = '3.3.1'
   spec.license               = 'MIT'
   spec.summary               = 'PaltaLib iOS SDK - Purchases'
   spec.homepage              = 'https://github.com/Palta-Data-Platform/paltalib-ios'
@@ -13,7 +13,7 @@ Pod::Spec.new do |spec|
 
   spec.source_files = 'Sources/**/*.swift'
 
-  spec.dependency 'PaltaCore', '>= 3.0.0'
+  spec.dependency 'PaltaCore', '>= 3.2.0'
   spec.dependency 'RevenueCat', '~> 4.7.0'
 end
 
