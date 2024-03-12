@@ -9,7 +9,7 @@ import Foundation
 import PaltaCore
 
 protocol FeaturesService {
-    func getFeatures(for userId: UserId, completion: @escaping (Result<[Feature], PaymentsError>) -> Void)
+    func getFeatures(for userId: UserId, completion: @escaping (Result<[FeatureInternal], PaymentsError>) -> Void)
 }
 
 final class FeaturesServiceImpl: FeaturesService {
@@ -21,7 +21,7 @@ final class FeaturesServiceImpl: FeaturesService {
         self.httpClient = httpClient
     }
     
-    func getFeatures(for userId: UserId, completion: @escaping (Result<[Feature], PaymentsError>) -> Void) {
+    func getFeatures(for userId: UserId, completion: @escaping (Result<[FeatureInternal], PaymentsError>) -> Void) {
         let request = PaymentsHTTPRequest.getFeatures(environment, userId)
         
         httpClient.perform(request) { (result: Result<FeaturesResponse, NetworkErrorWithoutResponse>) in

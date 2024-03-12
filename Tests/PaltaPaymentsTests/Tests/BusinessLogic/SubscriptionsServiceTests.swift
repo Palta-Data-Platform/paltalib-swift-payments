@@ -26,7 +26,7 @@ final class SubscriptionsServiceTests: XCTestCase {
     func testSuccess() {
         let userId = UserId.uuid(.init())
         let ids: Set<UUID> = [.init(), .init()]
-        let expectedSubscriptions = [Subscription.mock()]
+        let expectedSubscriptions = [SubscriptionInternal.mock()]
         httpMock.result = .success(SubscriptionResponse(subscriptions: expectedSubscriptions))
         
         let completionCalled = expectation(description: "Success completion called")

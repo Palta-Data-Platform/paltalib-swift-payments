@@ -1,5 +1,5 @@
 //
-//  Subscription.swift
+//  SubscriptionInternal.swift
 //  PaltaPayments
 //
 //  Created by Vyacheslav Beltyukov on 20/05/2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Subscription: Decodable, Equatable {
+struct SubscriptionInternal: Decodable, Equatable {
     enum State: String, Decodable, Equatable {
         case new
         case active
@@ -29,6 +29,6 @@ struct Subscription: Decodable, Equatable {
     let tags: [Tag]
 }
 
-extension Subscription.Tag {
-    static let trial = Subscription.Tag(rawValue: "trial")
+extension SubscriptionInternal.Tag {
+    static let trial = SubscriptionInternal.Tag(rawValue: "trial")
 }

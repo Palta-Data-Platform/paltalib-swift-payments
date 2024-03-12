@@ -70,6 +70,7 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
+    @available(*, deprecated, message: "Use getFeatures and/or getSubscriptions instead")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         checkSetupFinished()
         
@@ -77,6 +78,18 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
             plugin.getPaidFeatures(callback)
         }
     }
+    
+    public func getFeatures(_ completion: @escaping (Result<[Feature], Error>) -> Void) {
+        fatalError()
+    }
+    
+    public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
+        fatalError()
+    }
+    
+//    public func getPricePoints(with ids: [String], _ completion: @escaping (Result<[PricePoint], Error>) -> Void) {
+//        fatalError()
+//    }
     
     public func getProducts(
         with productIdentifiers: [String],
@@ -104,6 +117,7 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
+    @available(*, deprecated, message: "Use purchase2 method instead")
     public func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
@@ -116,12 +130,25 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
+    public func purchase2(
+        _ product: Product,
+        with promoOffer: PromoOffer?,
+        _ completion: @escaping (Result<SuccessfulPurchase2, Error>) -> Void
+    ) {
+        fatalError()
+    }
+    
+    @available(*, deprecated, message: "Use restorePurchases with Features callback instead")
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         checkSetupFinished()
         
         callAndCollectPaidFeatures(to: completion) { plugin, callback in
             plugin.restorePurchases(completion: callback)
         }
+    }
+    
+    public func restorePurchases(completion: @escaping (Result<Features, Error>) -> Void) {
+        fatalError()
     }
     
     public func setAppsflyerID(_ appsflyerID: String?) {
@@ -255,6 +282,7 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
+    @available(*, deprecated, message: "Use Feature instead")
     private func callAndCollectPaidFeatures(
         to completion: @escaping (Result<PaidFeatures, Error>) -> Void,
         call: (PurchasePlugin, @escaping (Result<PaidFeatures, Error>) -> Void) -> Void

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Feature instead")
 protocol PaidFeaturesService {
     func getPaidFeatures(
         for userId: UserId,
@@ -14,6 +15,7 @@ protocol PaidFeaturesService {
     )
 }
 
+@available(*, deprecated, message: "Use Feature instead")
 final class PaidFeaturesServiceImpl: PaidFeaturesService {
     private let subscriptionsService: SubscriptionsService
     private let featuresService: FeaturesService
@@ -46,7 +48,7 @@ final class PaidFeaturesServiceImpl: PaidFeaturesService {
     
     private func getSubscriptions(
         userId: UserId,
-        features: [Feature],
+        features: [FeatureInternal],
         completion: @escaping (Result<PaidFeatures, PaymentsError>) -> Void
     ) {
         let subscriptionIds = Set(features.compactMap { $0.lastSubscriptionId })
@@ -72,8 +74,8 @@ final class PaidFeaturesServiceImpl: PaidFeaturesService {
     }
 
     private func prepareData(
-        features: [Feature],
-        subscriptions: [Subscription],
+        features: [FeatureInternal],
+        subscriptions: [SubscriptionInternal],
         completion: @escaping (Result<PaidFeatures, PaymentsError>) -> Void
     ) {
         let paidFeatures = featureMapper.map(features, and: subscriptions)

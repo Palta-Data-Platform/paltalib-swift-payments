@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "This entity was separated into Feature and Subscription")
 public struct PaidFeature: Hashable {
     public enum PaymentType {
         case subscription
@@ -35,6 +36,7 @@ public struct PaidFeature: Hashable {
     public let cancellationToken: CancellationToken?
 }
 
+@available(*, deprecated, message: "This entity was separated into Feature and Subscription")
 extension PaidFeature {
     public var isLifetime: Bool {
         endDate == nil

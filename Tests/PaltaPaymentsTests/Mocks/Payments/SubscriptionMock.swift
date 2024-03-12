@@ -8,9 +8,9 @@
 import Foundation
 @testable import PaltaPayments
 
-extension Subscription {
-    static func mock() -> Subscription {
-        Subscription(
+extension SubscriptionInternal {
+    static func mock() -> SubscriptionInternal {
+        SubscriptionInternal(
             id: .init(),
             state: .active,
             createdAt: Date(timeIntervalSince1970: 0),

@@ -8,8 +8,10 @@
 import Foundation
 
 public protocol PurchasePluginDelegate {
+    @available(*, deprecated, message: "")
     typealias DefermentCallback = (@escaping (PurchasePluginResult<SuccessfulPurchase, Error>) -> Void) -> Void
     
+    @available(*, deprecated, message: "")
     func purchasePlugin(
         _ plugin: PurchasePlugin,
         shouldPurchase promoProduct: Product,

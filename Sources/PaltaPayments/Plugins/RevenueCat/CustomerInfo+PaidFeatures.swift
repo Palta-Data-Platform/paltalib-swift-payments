@@ -8,6 +8,7 @@
 import Foundation
 import RevenueCat
 
+@available(*, deprecated, message: "Use Feature instead")
 extension CustomerInfo {
     private var nonSubscriptionFeatures: [PaidFeature] {
         nonSubscriptions.map {
@@ -52,6 +53,7 @@ extension CustomerInfo {
     }
 }
 
+@available(*, deprecated, message: "Use Feature instead")
 private extension Store {
     var transactionType: PaidFeature.TransactionType {
         switch self {

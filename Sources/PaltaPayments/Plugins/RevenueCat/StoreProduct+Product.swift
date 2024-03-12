@@ -10,7 +10,6 @@ import RevenueCat
 
 extension Product {
     init(rc: StoreProduct) {
-        rc.priceFormatter
         self.init(
             productType: ProductType(rc: rc.productType),
             productIdentifier: rc.productIdentifier,

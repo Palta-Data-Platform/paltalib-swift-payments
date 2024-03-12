@@ -10,11 +10,11 @@ import Foundation
 
 final class FeaturesServiceMock: FeaturesService {
     var userId: UserId?
-    var result: Result<[Feature], PaymentsError>?
+    var result: Result<[FeatureInternal], PaymentsError>?
     
     func getFeatures(
         for userId: UserId,
-        completion: @escaping (Result<[Feature], PaymentsError>) -> Void
+        completion: @escaping (Result<[FeatureInternal], PaymentsError>) -> Void
     ) {
         self.userId = userId
         

@@ -7,12 +7,14 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Feature instead")
 protocol FeatureMapper {
-    func map(_ features: [Feature], and subscriptions: [Subscription]) -> [PaidFeature]
+    func map(_ features: [FeatureInternal], and subscriptions: [SubscriptionInternal]) -> [PaidFeature]
 }
 
+@available(*, deprecated, message: "Use Feature instead")
 final class FeatureMapperImpl: FeatureMapper {
-    func map(_ features: [Feature], and subscriptions: [Subscription]) -> [PaidFeature] {
+    func map(_ features: [FeatureInternal], and subscriptions: [SubscriptionInternal]) -> [PaidFeature] {
         let subscriptionById = Dictionary
             .init(grouping: subscriptions, by: { $0.id })
             .compactMapValues { $0.first }
@@ -35,16 +37,17 @@ final class FeatureMapperImpl: FeatureMapper {
     }
 }
 
-private extension Feature {
-    func paymentType(subscriptions: [UUID: Subscription]) -> PaidFeature.PaymentType {
+@available(*, deprecated, message: "Use Feature instead")
+private extension FeatureInternal {
+    func paymentType(subscriptions: [UUID: SubscriptionInternal]) -> PaidFeature.PaymentType {
         lastSubscriptionId.flatMap { subscriptions[$0] } != nil ? .subscription : .oneOff
     }
     
-    func isTrial(subscriptions: [UUID: Subscription]) -> Bool {
+    func isTrial(subscriptions: [UUID: SubscriptionInternal]) -> Bool {
         lastSubscriptionId.flatMap { subscriptions[$0]?.tags.contains(.trial) } ?? false
     }
     
-    func cancellationDate(subscriptions: [UUID: Subscription]) -> Date? {
+    func cancellationDate(subscriptions: [UUID: SubscriptionInternal]) -> Date? {
         lastSubscriptionId.flatMap { subscriptions[$0]?.canceledAt }
     }
 }

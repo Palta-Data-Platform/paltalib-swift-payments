@@ -20,7 +20,7 @@ final class FeatureMapperTests: XCTestCase {
     
     func testBaseMapping() {
         let features = [
-            Feature(
+            FeatureInternal(
                 quantity: 1,
                 actualFrom: Date(timeIntervalSince1970: 0),
                 actualTill: Date(timeIntervalSince1970: 100),
@@ -45,7 +45,7 @@ final class FeatureMapperTests: XCTestCase {
         let subscriptionId = UUID()
         
         let features = [
-            Feature(
+            FeatureInternal(
                 quantity: 1,
                 actualFrom: Date(timeIntervalSince1970: 0),
                 actualTill: Date(timeIntervalSince1970: 100),
@@ -55,7 +55,7 @@ final class FeatureMapperTests: XCTestCase {
         ]
         
         let subscriptions = [
-            Subscription(
+            SubscriptionInternal(
                 id: subscriptionId,
                 state: .active,
                 createdAt: Date(),
@@ -75,7 +75,7 @@ final class FeatureMapperTests: XCTestCase {
         let subscriptionId = UUID()
         
         let features = [
-            Feature(
+            FeatureInternal(
                 quantity: 1,
                 actualFrom: Date(timeIntervalSince1970: 0),
                 actualTill: Date(timeIntervalSince1970: 100),
@@ -85,7 +85,7 @@ final class FeatureMapperTests: XCTestCase {
         ]
         
         let subscriptions = [
-            Subscription(
+            SubscriptionInternal(
                 id: subscriptionId,
                 state: .active,
                 createdAt: Date(),

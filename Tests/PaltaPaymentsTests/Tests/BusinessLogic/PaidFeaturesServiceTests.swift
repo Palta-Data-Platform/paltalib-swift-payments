@@ -32,7 +32,7 @@ final class PaidFeaturesServiceTests: XCTestCase {
     
     func testSuccessWithSubscriptions() {
         let subscriptionId = UUID()
-        let subscriptions = [Subscription.mock()]
+        let subscriptions = [SubscriptionInternal.mock()]
         featuresMock.result = .success([.mock(lastSubscriptionId: subscriptionId)])
         subscriptionsMock.result = .success(subscriptions)
         let userId = UserId.uuid(UUID())

@@ -11,12 +11,12 @@ import Foundation
 final class SubscriptionsServiceMock: SubscriptionsService {
     var ids: Set<UUID>?
     var userId: UserId?
-    var result: Result<[Subscription], PaymentsError>?
+    var result: Result<[SubscriptionInternal], PaymentsError>?
     
     func getSubscriptions(
         with ids: Set<UUID>,
         for userId: UserId,
-        completion: @escaping (Result<[Subscription], PaymentsError>) -> Void
+        completion: @escaping (Result<[SubscriptionInternal], PaymentsError>) -> Void
     ) {
         self.ids = ids
         self.userId = userId

@@ -1,5 +1,5 @@
 //
-//  Feature.swift
+//  FeatureInternal.swift
 //  PaltaPayments
 //
 //  Created by Vyacheslav Beltyukov on 20/05/2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Feature: Decodable, Equatable {
+struct FeatureInternal: Decodable, Equatable {
     let quantity: Int
     let actualFrom: Date
     let actualTill: Date?

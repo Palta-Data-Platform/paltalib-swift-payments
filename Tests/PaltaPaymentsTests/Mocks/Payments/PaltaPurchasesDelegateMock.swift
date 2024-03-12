@@ -24,6 +24,14 @@ final class PaltaPurchasesDelegateMock: PaltaPurchasesDelegate {
         self.callback = defermentCallback
     }
     
+    func purchases(
+        _ purchases: PaltaPayments.PaltaPurchases,
+        shouldPurchase promoProduct: PaltaPayments.Product,
+        defermentCallback: @escaping DefermentCallback2
+    ) {
+        fatalError()
+    }
+    
     func paltaPurchases(
         _ purchases: PaltaPurchases,
         needsToOpenURL url: URL,

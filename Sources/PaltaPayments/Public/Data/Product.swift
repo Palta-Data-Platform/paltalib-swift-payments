@@ -19,7 +19,6 @@ public enum ProductType: Hashable {
 
     /// An auto-renewable subscription.
     case autoRenewableSubscription
-
 }
 
 public struct SubscriptionPeriod: Hashable {

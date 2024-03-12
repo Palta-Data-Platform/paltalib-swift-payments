@@ -27,6 +27,7 @@ public final class PBPurchasePlugin: PurchasePlugin {
         userId = nil
     }
     
+    @available(*, deprecated, message: "Use Features")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         guard let userId = userId else {
             completion(.failure(PaymentsError.noUserId))
@@ -53,6 +54,7 @@ public final class PBPurchasePlugin: PurchasePlugin {
         completion(.notSupported)
     }
     
+    @available(*, deprecated, message: "")
     public func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
@@ -61,6 +63,7 @@ public final class PBPurchasePlugin: PurchasePlugin {
         completion(.notSupported)
     }
     
+    @available(*, deprecated, message: "")
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         getPaidFeatures(completion)
     }

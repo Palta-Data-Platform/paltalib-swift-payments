@@ -8,5 +8,5 @@
 import Foundation
 
 struct FeaturesResponse: Decodable {
-    let features: [Feature]
+    let features: [FeatureInternal]
 }

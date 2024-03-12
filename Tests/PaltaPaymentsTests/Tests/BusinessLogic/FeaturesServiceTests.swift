@@ -24,7 +24,7 @@ final class FeaturesServiceTests: XCTestCase {
     
     func testSuccess() {
         let uuid = UUID()
-        let expectedFeatures = [Feature.mock()]
+        let expectedFeatures = [FeatureInternal.mock()]
         let completionCalled = expectation(description: "Success called")
         
         httpMock.result = .success(FeaturesResponse(features: expectedFeatures))
@@ -46,7 +46,7 @@ final class FeaturesServiceTests: XCTestCase {
     
     func testFail() {
         let uuid = UUID()
-        let expectedFeatures = [Feature.mock()]
+        let expectedFeatures = [FeatureInternal.mock()]
         let completionCalled = expectation(description: "Fail called")
         
         httpMock.result = .success(FeaturesResponse(features: expectedFeatures))

@@ -8,9 +8,9 @@
 import Foundation
 @testable import PaltaPayments
 
-extension Feature {
-    static func mock(lastSubscriptionId: UUID? = nil) -> Feature {
-        Feature(
+extension FeatureInternal {
+    static func mock(lastSubscriptionId: UUID? = nil) -> FeatureInternal {
+        FeatureInternal(
             quantity: 1,
             actualFrom: Date(timeIntervalSince1970: 0),
             actualTill: Date(timeIntervalSince1970: 100),

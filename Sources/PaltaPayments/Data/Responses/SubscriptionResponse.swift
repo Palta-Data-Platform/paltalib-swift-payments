@@ -8,5 +8,5 @@
 import Foundation
 
 struct SubscriptionResponse: Decodable {
-    let subscriptions: [Subscription]
+    let subscriptions: [SubscriptionInternal]
 }

@@ -25,6 +25,7 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
     public func logOut() {
     }
     
+    @available(*, deprecated, message: "Use Feature instead")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         completion(.success(PaidFeatures()))
     }
@@ -37,10 +38,12 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
         completion(.notSupported)
     }
     
+    @available(*, deprecated, message: "")
     public func purchase(_ product: Product, with promoOffer: PromoOffer?, _ completion: @escaping (PurchasePluginResult<SuccessfulPurchase, Error>) -> Void) {
         completion(.notSupported)
     }
     
+    @available(*, deprecated, message: "Use Feature instead")
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         completion(.success(PaidFeatures()))
     }

@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Features instead")
 public struct PaidFeatures: Equatable {
     private var featuresByName: [String: Set<PaidFeature>]
     
@@ -27,12 +28,14 @@ public struct PaidFeatures: Equatable {
     }
 }
 
+@available(*, deprecated, message: "Use Features instead")
 extension PaidFeatures {
     public func hasActiveFeature(with name: String) -> Bool {
         featuresByName[name]?.contains(where: { $0.isActive }) ?? false
     }
 }
 
+@available(*, deprecated, message: "Use Features instead")
 extension PaidFeatures {
     public var features: [PaidFeature] {
         featuresByName.values.flatMap { $0 }

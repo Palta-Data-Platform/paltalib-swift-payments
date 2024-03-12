@@ -469,8 +469,8 @@ final class PaltaPurchasesTests: XCTestCase {
         ]
         
         let failCalled = expectation(description: "Restore failure")
-        instance.restorePurchases {
-            guard case .failure = $0 else {
+        instance.restorePurchases { (result: Result<Features, Error>) in
+            guard case .failure = result else {
                 return
             }
             
