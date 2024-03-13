@@ -25,7 +25,11 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
     public func logOut() {
     }
     
-    @available(*, deprecated, message: "Use Feature instead")
+    public func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void) {
+        completion(.success(Features()))
+    }
+    
+    @available(*, deprecated, message: "Use getFeatures instead")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         completion(.success(PaidFeatures()))
     }

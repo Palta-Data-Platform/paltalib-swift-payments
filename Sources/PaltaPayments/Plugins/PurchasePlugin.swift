@@ -13,6 +13,8 @@ public protocol PurchasePlugin: AnyObject {
     func logIn(appUserId: UserId, completion: @escaping (Result<(), Error>) -> Void)
     func logOut()
     
+    func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void)
+    
     @available(*, deprecated, message: "")
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     

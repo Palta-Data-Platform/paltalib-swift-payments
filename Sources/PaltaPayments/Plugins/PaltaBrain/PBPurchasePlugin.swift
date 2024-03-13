@@ -27,7 +27,18 @@ public final class PBPurchasePlugin: PurchasePlugin {
         userId = nil
     }
     
-    @available(*, deprecated, message: "Use Features")
+    public func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void) {
+        guard let userId = userId else {
+            completion(.failure(PaymentsError.noUserId))
+            return
+        }
+
+        assembly.newFeaturesService.getFeatures(for: userId) {
+            completion($0.mapError { $0 as Error })
+        }
+    }
+    
+    @available(*, deprecated, message: "Use getFeatures")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         guard let userId = userId else {
             completion(.failure(PaymentsError.noUserId))

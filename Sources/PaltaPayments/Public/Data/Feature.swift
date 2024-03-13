@@ -9,13 +9,9 @@ import Foundation
 
 public struct Feature: Hashable {
     public let name: String
-    public let isTrial: Bool
-    public let isIntroductory: Bool
-    public let willRenew: Bool
     
     public let startDate: Date
     public let endDate: Date?
-    public let cancellationDate: Date?
 }
 
 extension Feature {

@@ -9,14 +9,20 @@ import Foundation
 import PaltaCore
 
 protocol PaymentsAssembly {
-    @available(*, deprecated, message: "Use Feature instead")
+    @available(*, deprecated, message: "Use `newFeaturesService` instead")
     var paidFeaturesService: PaidFeaturesService { get }
+    
+    var newFeaturesService: NewFeaturesService { get }
 }
 
 final class RealPaymentsAssembly: PaymentsAssembly {
-    @available(*, deprecated, message: "Use Feature instead")
+    @available(*, deprecated, message: "Use `newFeaturesService` instead")
     var paidFeaturesService: PaidFeaturesService {
         webPaymentsAssembly.paidFeaturesService
+    }
+    
+    var newFeaturesService: NewFeaturesService {
+        webPaymentsAssembly.newFeaturesService
     }
     
     private let coreAssembly: CoreAssembly

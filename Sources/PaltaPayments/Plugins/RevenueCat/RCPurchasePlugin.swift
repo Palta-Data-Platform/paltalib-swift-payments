@@ -35,6 +35,16 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         purchases.logOut(completion: nil)
     }
     
+    public func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void) {
+        purchases.getCustomerInfo { customerInfo, error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(customerInfo?.features ?? Features()))
+            }
+        }
+    }
+    
     @available(*, deprecated, message: "")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         purchases.getCustomerInfo { [purchases] customerInfo, error in
