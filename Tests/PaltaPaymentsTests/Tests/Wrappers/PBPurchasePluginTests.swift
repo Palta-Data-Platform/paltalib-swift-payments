@@ -97,6 +97,61 @@ final class PBPurchasePluginTests: XCTestCase {
         wait(for: [completionCalled], timeout: 0.1)
     }
     
+    func testGetFeaturesSuccess() {
+        let userId = UserId.uuid(UUID())
+        let expectedFeatures = Features(features: [.init(name: "name", startDate: Date(), endDate: nil)])
+        assemblyMock.newFeaturesMock.result = .success(expectedFeatures)
+        
+        let completionCalled = expectation(description: "Success called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getFeatures { result in
+            guard case let .success(features) = result else {
+                return
+            }
+            
+            XCTAssertEqual(features, expectedFeatures)
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.newFeaturesMock.userId, userId)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetFeaturesFail() {
+        let userId = UserId.uuid(UUID())
+        assemblyMock.newFeaturesMock.result = .failure(.invalidKey)
+        
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getFeatures { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.newFeaturesMock.userId, userId)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetFeaturesNoLogin() {
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.getFeatures { result in
+            guard case let .failure(error) = result, case .noUserId = (error as? PaymentsError) else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+        XCTAssertNil(assemblyMock.newFeaturesMock.userId)
+    }
+    
     func testGetProducts() {
         let completionCalled = expectation(description: "Not supported called")
         

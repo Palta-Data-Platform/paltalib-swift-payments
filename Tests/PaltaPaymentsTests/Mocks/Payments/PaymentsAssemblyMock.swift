@@ -9,7 +9,7 @@ import Foundation
 @testable import PaltaPayments
 
 final class PaymentsAssemblyMock: PaymentsAssembly {
-    let newFeaturesMock = NewFeaturesServiceImpl(featuresService: FeaturesServiceMock())
+    let newFeaturesMock = NewFeaturesServiceMock()
     let paidFeaturesMock = PaidFeaturesServiceMock()
     
     var paidFeaturesService: PaidFeaturesService {
