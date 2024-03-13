@@ -79,8 +79,12 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    public func getFeatures(_ completion: @escaping (Result<[Feature], Error>) -> Void) {
-        fatalError()
+    public func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void) {
+        checkSetupFinished()
+        
+        callAndCollectFeatures(to: completion) { plugin, callback in
+            plugin.getFeatures(callback)
+        }
     }
     
     public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
@@ -282,7 +286,22 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    @available(*, deprecated, message: "Use Feature instead")
+    private func callAndCollectFeatures(
+        to completion: @escaping (Result<Features, Error>) -> Void,
+        call: (PurchasePlugin, @escaping (Result<Features, Error>) -> Void) -> Void
+    ) {
+        callAndCollect(call: call) { result in
+            completion(
+                result.map {
+                    $0.reduce(Features()) {
+                        $0.merged(with: $1)
+                    }
+                }
+            )
+        }
+    }
+    
+    @available(*, deprecated, message: "Use `callAndCollectFeatures` instead")
     private func callAndCollectPaidFeatures(
         to completion: @escaping (Result<PaidFeatures, Error>) -> Void,
         call: (PurchasePlugin, @escaping (Result<PaidFeatures, Error>) -> Void) -> Void

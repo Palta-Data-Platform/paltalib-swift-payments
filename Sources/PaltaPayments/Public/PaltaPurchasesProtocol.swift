@@ -23,7 +23,7 @@ public protocol PaltaPurchasesProtocol: AnyObject {
     @available(*, deprecated, message: "Use getFeatures and/or getSubscriptions instead")
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
-    func getFeatures(_ completion: @escaping (Result<[Feature], Error>) -> Void)
+    func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void)
     
     func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void)
     

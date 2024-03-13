@@ -225,6 +225,120 @@ final class PaltaPurchasesTests: XCTestCase {
         wait(for: [completionCalled], timeout: 0.1)
     }
     
+    func testGetFeaturesSuccess() {
+        let pluginFeatures = [
+            Features(
+                features: [
+                    Feature(name: "Feature 1", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                    Feature(name: "Feature 2", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                    Feature(name: "Feature 3", startDate: Date(timeIntervalSince1970: 0), endDate: nil)
+                ]
+            ),
+            Features(),
+            Features(
+                features: [
+                    Feature(name: "Feature 6", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                    Feature(name: "Feature 2", startDate: Date(timeIntervalSince1970: 88), endDate: nil),
+                    Feature(name: "Feature 5", startDate: Date(timeIntervalSince1970: 0), endDate: nil)
+                ]
+            )
+        ]
+        
+        assert(mockPlugins.count == pluginFeatures.count)
+        
+        let expectedFeatures = Features(
+            features: [
+                Feature(name: "Feature 1", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                Feature(name: "Feature 2", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                Feature(name: "Feature 3", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                Feature(name: "Feature 6", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                Feature(name: "Feature 2", startDate: Date(timeIntervalSince1970: 88), endDate: nil),
+                Feature(name: "Feature 5", startDate: Date(timeIntervalSince1970: 0), endDate: nil)
+            ]
+        )
+        
+        let completionCalled = expectation(description: "Get paid features completed successfully")
+        
+        instance.getFeatures { result in
+            guard case .success(let features) = result else {
+                return
+            }
+            
+            XCTAssertEqual(features, expectedFeatures)
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getFeaturesCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getFeaturesCompletion?(.success(pluginFeatures[iteration]))
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetFeaturesOneError() {
+        let pluginFeatures = [
+            Features(
+                features: [
+                    Feature(name: "Feature 1", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                    Feature(name: "Feature 2", startDate: Date(timeIntervalSince1970: 0), endDate: nil),
+                    Feature(name: "Feature 3", startDate: Date(timeIntervalSince1970: 0), endDate: nil)
+                ]
+            ),
+            Features()
+        ]
+        
+        let completionCalled = expectation(description: "Get paid features completed with fail 1")
+        
+        instance.getFeatures { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getFeaturesCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getFeaturesCompletion?(
+                pluginFeatures.indices.contains(iteration)
+                ? .success(pluginFeatures[iteration])
+                : .failure(NSError(domain: "", code: 0))
+            )
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetFeaturesAllErrors() {
+        let completionCalled = expectation(description: "Get paid features completed with fail 2")
+        
+        instance.getFeatures { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getFeaturesCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getFeaturesCompletion?(.failure(NSError(domain: "", code: 0)))
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
     func testPromoOfferFirstSuccess() {
         let completionCalled = expectation(description: "Get promo offer completed 1")
         
