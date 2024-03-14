@@ -21,6 +21,8 @@ public class Subscription {
         case android
     }
     
+    public let id: UUID
+    
     public let productIdentifier: String
     
     public let startDate: Date
@@ -34,9 +36,10 @@ public class Subscription {
     
     public let providedFeatures: [String]
     
-    public let next: Subscription?
+    public internal(set) var next: Subscription?
     
     init(
+        id: UUID,
         productIdentifier: String,
         startDate: Date,
         endDate: Date,
@@ -48,6 +51,7 @@ public class Subscription {
         providedFeatures: [String],
         next: Subscription?
     ) {
+        self.id = id
         self.productIdentifier = productIdentifier
         self.startDate = startDate
         self.endDate = endDate

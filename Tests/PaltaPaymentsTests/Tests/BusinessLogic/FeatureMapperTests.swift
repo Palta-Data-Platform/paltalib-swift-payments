@@ -62,6 +62,13 @@ final class FeatureMapperTests: XCTestCase {
                 canceledAt: Date(),
                 currentPeriodStartAt: Date(),
                 currentPeriodEndAt: Date(),
+                nextSubscriptionId: nil,
+                pricePoint: .init(
+                    ident: "",
+                    services: [],
+                    currencyCode: "",
+                    nextTotalPrice: ""
+                ),
                 tags: [.trial]
             )
         ]
@@ -92,6 +99,13 @@ final class FeatureMapperTests: XCTestCase {
                 canceledAt: Date(timeIntervalSince1970: 50),
                 currentPeriodStartAt: Date(),
                 currentPeriodEndAt: Date(),
+                nextSubscriptionId: nil,
+                pricePoint: .init(
+                    ident: "",
+                    services: [],
+                    currencyCode: "",
+                    nextTotalPrice: ""
+                ),
                 tags: []
             )
         ]

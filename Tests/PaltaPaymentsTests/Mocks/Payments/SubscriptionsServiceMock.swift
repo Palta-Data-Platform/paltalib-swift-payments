@@ -14,7 +14,7 @@ final class SubscriptionsServiceMock: SubscriptionsService {
     var result: Result<[SubscriptionInternal], PaymentsError>?
     
     func getSubscriptions(
-        with ids: Set<UUID>,
+        with ids: Set<UUID>?,
         for userId: UserId,
         completion: @escaping (Result<[SubscriptionInternal], PaymentsError>) -> Void
     ) {

@@ -12,6 +12,7 @@ struct SubscriptionInternal: Decodable, Equatable {
         case new
         case active
         case cancelled = "canceled"
+        case upcoming = "is_upcoming"
     }
     
     struct Tag: RawRepresentable, Decodable, Equatable {
@@ -20,12 +21,25 @@ struct SubscriptionInternal: Decodable, Equatable {
         let rawValue: String
     }
     
+    struct PricePoint: Decodable, Equatable {
+        let ident: String
+        let services: [Feature]
+        let currencyCode: String
+        let nextTotalPrice: String
+    }
+    
+    struct Feature: Decodable, Equatable {
+        let featureIdent: String
+    }
+    
     let id: UUID
     let state: State
     let createdAt: Date
     let canceledAt: Date?
     let currentPeriodStartAt: Date
     let currentPeriodEndAt: Date
+    let nextSubscriptionId: UUID?
+    let pricePoint: PricePoint
     let tags: [Tag]
 }
 

@@ -10,7 +10,7 @@ import PaltaCore
 
 protocol SubscriptionsService {
     func getSubscriptions(
-        with ids: Set<UUID>,
+        with ids: Set<UUID>?,
         for userId: UserId,
         completion: @escaping (Result<[SubscriptionInternal], PaymentsError>) -> Void
     )
@@ -26,7 +26,7 @@ final class SubscriptionsServiceImpl: SubscriptionsService {
     }
     
     func getSubscriptions(
-        with ids: Set<UUID>,
+        with ids: Set<UUID>?,
         for userId: UserId,
         completion: @escaping (Result<[SubscriptionInternal], PaymentsError>) -> Void
     ) {

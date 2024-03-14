@@ -9,14 +9,25 @@ import Foundation
 @testable import PaltaPayments
 
 extension SubscriptionInternal {
-    static func mock() -> SubscriptionInternal {
+    static func mock(
+        ident: String = "ident1",
+        id: UUID = UUID(),
+        nextId: UUID? = nil
+    ) -> SubscriptionInternal {
         SubscriptionInternal(
-            id: .init(),
+            id: id,
             state: .active,
             createdAt: Date(timeIntervalSince1970: 0),
             canceledAt: Date(timeIntervalSince1970: 12),
             currentPeriodStartAt: Date(timeIntervalSince1970: 6),
             currentPeriodEndAt: Date(timeIntervalSince1970: 18),
+            nextSubscriptionId: nextId,
+            pricePoint: PricePoint(
+                ident: ident,
+                services: [.init(featureIdent: "feature1")],
+                currencyCode: "USD",
+                nextTotalPrice: "990.98"
+            ),
             tags: [.trial]
         )
     }
