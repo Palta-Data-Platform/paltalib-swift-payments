@@ -339,6 +339,91 @@ final class PaltaPurchasesTests: XCTestCase {
         wait(for: [completionCalled], timeout: 0.1)
     }
     
+    func testGetSubsSuccess() {
+        let pluginSubs: [[Subscription]] = [
+            [.mock()],
+            [],
+            [.mock(), .mock(), .mock()]
+        ]
+        
+        assert(mockPlugins.count == pluginSubs.count)
+        
+        let completionCalled = expectation(description: "Get paid features completed successfully")
+        
+        instance.getSubscriptions { result in
+            guard case .success(let subs) = result else {
+                return
+            }
+            
+            XCTAssertEqual(subs.count, 4)
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getSubscriptionsCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getSubscriptionsCompletion?(.success(pluginSubs[iteration]))
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetSubsOneError() {
+        let pluginSubs: [[Subscription]] = [
+            [.mock()],
+            []
+        ]
+        
+        let completionCalled = expectation(description: "Get paid features completed with fail 1")
+        
+        instance.getSubscriptions { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getSubscriptionsCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getSubscriptionsCompletion?(
+                pluginSubs.indices.contains(iteration)
+                ? .success(pluginSubs[iteration])
+                : .failure(NSError(domain: "", code: 0))
+            )
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetSubsAllErrors() {
+        let completionCalled = expectation(description: "Get paid features completed with fail 2")
+        
+        instance.getSubscriptions { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        checkPlugins {
+            $0.getSubscriptionsCompletion != nil
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { iteration in
+            mockPlugins[iteration].getSubscriptionsCompletion?(.failure(NSError(domain: "", code: 0)))
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
     func testPromoOfferFirstSuccess() {
         let completionCalled = expectation(description: "Get promo offer completed 1")
         

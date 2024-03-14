@@ -88,7 +88,20 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
     }
     
     public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
-        fatalError()
+        checkSetupFinished()
+        
+        callAndCollect(
+            call: { $0.getSubscriptions($1) },
+            completion: {
+                switch $0 {
+                case let .success(subs):
+                    completion(.success(subs.flatMap { $0 }))
+                    
+                case let .failure(error):
+                    completion(.failure(error))
+                }
+            }
+        )
     }
     
 //    public func getPricePoints(with ids: [String], _ completion: @escaping (Result<[PricePoint], Error>) -> Void) {
