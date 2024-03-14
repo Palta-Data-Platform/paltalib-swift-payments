@@ -38,6 +38,17 @@ public final class PBPurchasePlugin: PurchasePlugin {
         }
     }
     
+    public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
+        guard let userId = userId else {
+            completion(.failure(PaymentsError.noUserId))
+            return
+        }
+        
+        assembly.publicSubscriptionsService.getSubscriptions(for: userId) {
+            completion($0.mapError { $0 as Error })
+        }
+    }
+    
     @available(*, deprecated, message: "Use getFeatures")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         guard let userId = userId else {

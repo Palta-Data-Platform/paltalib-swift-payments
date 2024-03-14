@@ -39,7 +39,6 @@ final class PublicSubscriptionsServiceTests: XCTestCase {
             type: .web,
             price: 990.98,
             currencyCode: "USD",
-            period: .init(value: 6, unit: .day),
             providedFeatures: ["feature1"],
             next: nil
         )

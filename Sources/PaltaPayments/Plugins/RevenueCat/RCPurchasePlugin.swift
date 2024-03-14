@@ -45,6 +45,16 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
+    public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
+        purchases.getCustomerInfo { customerInfo, error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(customerInfo?.paltaSubscriptions ?? []))
+            }
+        }
+    }
+    
     @available(*, deprecated, message: "")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         purchases.getCustomerInfo { [purchases] customerInfo, error in

@@ -152,6 +152,61 @@ final class PBPurchasePluginTests: XCTestCase {
         XCTAssertNil(assemblyMock.newFeaturesMock.userId)
     }
     
+    func testGetSubsSuccess() {
+        let userId = UserId.uuid(UUID())
+        let expectedSubs = [Subscription.mock()]
+        assemblyMock.publicSubscriptionsMock.result = .success(expectedSubs)
+        
+        let completionCalled = expectation(description: "Success called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getSubscriptions { result in
+            guard case let .success(subs) = result else {
+                return
+            }
+            
+            XCTAssertEqual(subs.map { $0.id }, expectedSubs.map { $0.id })
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.publicSubscriptionsMock.userId, userId)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetSubsFail() {
+        let userId = UserId.uuid(UUID())
+        assemblyMock.publicSubscriptionsMock.result = .failure(.invalidKey)
+        
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getSubscriptions { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.publicSubscriptionsMock.userId, userId)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetSubsNoLogin() {
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.getSubscriptions { result in
+            guard case let .failure(error) = result, case .noUserId = (error as? PaymentsError) else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+        XCTAssertNil(assemblyMock.publicSubscriptionsMock.userId)
+    }
+    
     func testGetProducts() {
         let completionCalled = expectation(description: "Not supported called")
         

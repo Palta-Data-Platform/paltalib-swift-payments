@@ -11,6 +11,7 @@ import Foundation
 final class PaymentsAssemblyMock: PaymentsAssembly {
     let newFeaturesMock = NewFeaturesServiceMock()
     let paidFeaturesMock = PaidFeaturesServiceMock()
+    let publicSubscriptionsMock = PublicSubscriptionsServiceMock()
     
     var paidFeaturesService: PaidFeaturesService {
         paidFeaturesMock
@@ -18,5 +19,9 @@ final class PaymentsAssemblyMock: PaymentsAssembly {
     
     var newFeaturesService: NewFeaturesService {
         newFeaturesMock
+    }
+    
+    var publicSubscriptionsService: PublicSubscriptionsService {
+        publicSubscriptionsMock
     }
 }

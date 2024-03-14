@@ -29,6 +29,10 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
         completion(.success(Features()))
     }
     
+    public func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void) {
+        completion(.success([]))
+    }
+    
     @available(*, deprecated, message: "Use getFeatures instead")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         completion(.success(PaidFeatures()))

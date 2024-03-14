@@ -15,6 +15,8 @@ public protocol PurchasePlugin: AnyObject {
     
     func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void)
     
+    func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void)
+    
     @available(*, deprecated, message: "")
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     

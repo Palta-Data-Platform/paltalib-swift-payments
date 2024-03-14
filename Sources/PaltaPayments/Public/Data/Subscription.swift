@@ -19,9 +19,10 @@ public class Subscription {
         case web
         case apple
         case android
+        case other
     }
     
-    public let id: UUID
+    public let id: UUID?
     
     public let productIdentifier: String
     
@@ -30,24 +31,22 @@ public class Subscription {
     
     public let state: State
     public let type: ChargeType
-    public let price: Decimal
-    public let currencyCode: String
-    public let period: SubscriptionPeriod
+    public let price: Decimal?
+    public let currencyCode: String?
     
     public let providedFeatures: [String]
     
     public internal(set) var next: Subscription?
     
     init(
-        id: UUID,
+        id: UUID?,
         productIdentifier: String,
         startDate: Date,
         endDate: Date,
         state: Subscription.State,
         type: Subscription.ChargeType,
-        price: Decimal,
-        currencyCode: String,
-        period: SubscriptionPeriod,
+        price: Decimal?,
+        currencyCode: String?,
         providedFeatures: [String],
         next: Subscription?
     ) {
@@ -59,7 +58,6 @@ public class Subscription {
         self.type = type
         self.price = price
         self.currencyCode = currencyCode
-        self.period = period
         self.providedFeatures = providedFeatures
         self.next = next
     }

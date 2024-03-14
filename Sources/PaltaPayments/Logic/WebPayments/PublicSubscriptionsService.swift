@@ -51,7 +51,9 @@ final class PublicSubscriptionsServiceImpl: PublicSubscriptionsService {
             .compactMapValues { $0.first }
         
         mappedSubscriptions.forEach {
-            $0.next = subscOriginalMap[$0.id]?.nextSubscriptionId.flatMap { subscFinalMap[$0] }
+            $0.next = subscOriginalMap[$0.id ?? UUID()]?
+                .nextSubscriptionId
+                .flatMap { subscFinalMap[$0] }
         }
         
         mappedSubscriptions.forEach(checkForCycleRefs)
@@ -73,7 +75,6 @@ final class PublicSubscriptionsServiceImpl: PublicSubscriptionsService {
             type: .web,
             price: Decimal(string: subscription.pricePoint.nextTotalPrice, locale: Locale(identifier: "en-US")) ?? 0,
             currencyCode: subscription.pricePoint.currencyCode,
-            period: .init(value: 0, unit: .day),
             providedFeatures: subscription.pricePoint.services.map { $0.featureIdent },
             next: nil
         )
@@ -84,9 +85,10 @@ final class PublicSubscriptionsServiceImpl: PublicSubscriptionsService {
         var subscription = subscription
         
         while let next = subscription.next {
-            ids.insert(subscription.id)
+            guard let subId = subscription.id, let nextId = next.id else { return }
+            ids.insert(subId)
             
-            if ids.contains(next.id) {
+            if ids.contains(nextId) {
                 subscription.next = nil
                 return
             } else {

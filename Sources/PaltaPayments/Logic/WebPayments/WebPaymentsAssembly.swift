@@ -13,11 +13,17 @@ final class WebPaymentsAssembly {
     let paidFeaturesService: PaidFeaturesService
     
     let newFeaturesService: NewFeaturesService
+    let publicSubscriptionsService: PublicSubscriptionsService
     
     @available(*, deprecated, message: "")
-    private init(paidFeaturesService: PaidFeaturesService, newFeaturesService: NewFeaturesService) {
+    private init(
+        paidFeaturesService: PaidFeaturesService,
+        newFeaturesService: NewFeaturesService,
+        publicSubscriptionsService: PublicSubscriptionsService
+    ) {
         self.paidFeaturesService = paidFeaturesService
         self.newFeaturesService = newFeaturesService
+        self.publicSubscriptionsService = publicSubscriptionsService
     }
 }
 
@@ -37,7 +43,12 @@ extension WebPaymentsAssembly {
         )
         
         let newFeaturesService = NewFeaturesServiceImpl(featuresService: featuresService)
+        let publicSubscriptionsService = PublicSubscriptionsServiceImpl(subscriptionsService: subscriptionsService)
         
-        self.init(paidFeaturesService: paidFeaturesService, newFeaturesService: newFeaturesService)
+        self.init(
+            paidFeaturesService: paidFeaturesService,
+            newFeaturesService: newFeaturesService,
+            publicSubscriptionsService: publicSubscriptionsService
+        )
     }
 }

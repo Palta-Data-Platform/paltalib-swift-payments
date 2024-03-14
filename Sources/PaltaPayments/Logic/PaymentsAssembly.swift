@@ -13,6 +13,7 @@ protocol PaymentsAssembly {
     var paidFeaturesService: PaidFeaturesService { get }
     
     var newFeaturesService: NewFeaturesService { get }
+    var publicSubscriptionsService: PublicSubscriptionsService { get }
 }
 
 final class RealPaymentsAssembly: PaymentsAssembly {
@@ -23,6 +24,10 @@ final class RealPaymentsAssembly: PaymentsAssembly {
     
     var newFeaturesService: NewFeaturesService {
         webPaymentsAssembly.newFeaturesService
+    }
+    
+    var publicSubscriptionsService: PublicSubscriptionsService {
+        webPaymentsAssembly.publicSubscriptionsService
     }
     
     private let coreAssembly: CoreAssembly
