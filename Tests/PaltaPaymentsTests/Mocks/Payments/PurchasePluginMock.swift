@@ -19,6 +19,7 @@ final class PurchasePluginMock: PurchasePlugin {
     var getSubscriptionsCompletion: ((Result<[Subscription], Error>) -> Void)?
     var getPaidFeaturesCompletion: ((Result<PaidFeatures, Error>) -> Void)?
     var getProductsCompletion: ((Result<Set<Product>, Error>) -> Void)?
+    var getWebPricePointsCompletion: ((Result<[WebPricePoint], Error>) -> Void)?
     var getPromotionalOfferCompletion: ((PurchasePluginResult<PromoOffer, Error>) -> Void)?
     var purchaseCompletion: ((PurchasePluginResult<SuccessfulPurchase, Error>) -> Void)?
     var restorePurchasesCompletion: ((Result<PaidFeatures, Error>) -> Void)?
@@ -57,6 +58,10 @@ final class PurchasePluginMock: PurchasePlugin {
     func getProducts(with productIdentifiers: [String], _ completion: @escaping (Result<Set<Product>, Error>) -> Void) {
         getProductsCompletion = completion
         getProductsIndentifiers = productIdentifiers
+    }
+    
+    func getWebPricePoints(with ids: Set<String>, _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void) {
+        getWebPricePointsCompletion = completion
     }
     
     func getPromotionalOffer(for productDiscount: ProductDiscount, product: Product, _ completion: @escaping (PurchasePluginResult<PromoOffer, Error>) -> Void) {

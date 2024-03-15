@@ -75,6 +75,13 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
+    public func getWebPricePoints(
+        with ids: Set<String>,
+        _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void
+    ) {
+        completion(.success([]))
+    }
+    
     @available(iOS 12.2, *)
     public func getPromotionalOffer(
         for productDiscount: ProductDiscount,

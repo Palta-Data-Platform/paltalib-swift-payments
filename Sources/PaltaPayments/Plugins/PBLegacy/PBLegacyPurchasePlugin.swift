@@ -42,6 +42,13 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
         completion(.success([]))
     }
     
+    public func getWebPricePoints(
+        with ids: Set<String>,
+        _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void
+    ) {
+        completion(.success([]))
+    }
+    
     public func getPromotionalOffer(for productDiscount: ProductDiscount, product: Product, _ completion: @escaping (PurchasePluginResult<PromoOffer, Error>) -> Void) {
         completion(.notSupported)
     }

@@ -68,6 +68,20 @@ public final class PBPurchasePlugin: PurchasePlugin {
         completion(.success([]))
     }
     
+    public func getWebPricePoints(
+        with ids: Set<String>,
+        _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void
+    ) {
+        guard let userId = userId else {
+            completion(.failure(PaymentsError.noUserId))
+            return
+        }
+        
+        assembly.showcaseService.getPricePoints(with: ids, for: userId) {
+            completion($0.mapError { $0 as Error })
+        }
+    }
+    
     public func getPromotionalOffer(
         for productDiscount: ProductDiscount,
         product: Product,

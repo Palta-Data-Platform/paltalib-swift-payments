@@ -14,6 +14,7 @@ protocol PaymentsAssembly {
     
     var newFeaturesService: NewFeaturesService { get }
     var publicSubscriptionsService: PublicSubscriptionsService { get }
+    var showcaseService: ShowcaseService { get }
 }
 
 final class RealPaymentsAssembly: PaymentsAssembly {
@@ -28,6 +29,10 @@ final class RealPaymentsAssembly: PaymentsAssembly {
     
     var publicSubscriptionsService: PublicSubscriptionsService {
         webPaymentsAssembly.publicSubscriptionsService
+    }
+    
+    var showcaseService: ShowcaseService {
+        webPaymentsAssembly.showcaseService
     }
     
     private let coreAssembly: CoreAssembly

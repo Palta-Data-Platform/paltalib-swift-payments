@@ -76,4 +76,28 @@ final class PaymentsHTTPRequestTests: XCTestCase {
             ["Content-Type": "application/json", "aHeader2": "aValue2"]
         )
     }
+    
+    func testGetPricePoints() {
+        let userIdString = "8900f862-0cc4-4d0a-aa12-5b764112c574"
+        let env = URL(string: "http://\(UUID())")!
+        
+        let request = PaymentsHTTPRequest.getPricePoints(
+            env,
+            .uuid(UUID(uuidString: userIdString)!),
+            ["ident 1"]
+        )
+        
+        let urlRequest = request.urlRequest(headerFields: ["aHeader2": "aValue2"])
+        let payloadString = urlRequest?.httpBody.flatMap { String(data: $0, encoding: .utf8) }
+        
+        XCTAssertEqual(urlRequest?.httpMethod, "POST")
+        XCTAssertEqual(urlRequest?.url, env.appendingPathComponent("showcase/get-price-points"))
+        XCTAssertEqual(
+            urlRequest?.allHTTPHeaderFields,
+            ["Content-Type": "application/json", "aHeader2": "aValue2"]
+        )
+        
+        XCTAssert(payloadString!.contains("customerId\":{\"value\":\"\(userIdString.uppercased())\""))
+        XCTAssert(payloadString!.contains("\"ident\":[\"ident 1\"]"))
+    }
 }

@@ -104,10 +104,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         )
     }
     
-//    public func getPricePoints(with ids: [String], _ completion: @escaping (Result<[PricePoint], Error>) -> Void) {
-//        fatalError()
-//    }
-    
     public func getProducts(
         with productIdentifiers: [String],
         completion: @escaping (Result<Set<Product>, Error>) -> Void
@@ -118,6 +114,19 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
             completion(
                 result.map { $0.reduce([]) { $0.union($1) } }
             )
+        })
+    }
+    
+    public func getWebPricePoints(
+        with ids: Set<String>,
+        _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void
+    ) {
+        checkSetupFinished()
+        
+        callAndCollect(call: { plugin, callback in
+            plugin.getWebPricePoints(with: ids, callback)
+        }, completion: { result in
+            completion(result.map { $0.flatMap { $0 } })
         })
     }
     

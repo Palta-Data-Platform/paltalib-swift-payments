@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PaltaCore
 @testable import PaltaPayments
 
 final class PaymentsAssemblyMock: PaymentsAssembly {
@@ -23,5 +24,9 @@ final class PaymentsAssemblyMock: PaymentsAssembly {
     
     var publicSubscriptionsService: PublicSubscriptionsService {
         publicSubscriptionsMock
+    }
+    
+    var showcaseService: ShowcaseService {
+        ShowcaseServiceImpl(environment: URL(string: "")!, httpClient: HTTPClientImpl())
     }
 }

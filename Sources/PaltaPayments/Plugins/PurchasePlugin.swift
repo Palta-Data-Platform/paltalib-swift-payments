@@ -25,6 +25,11 @@ public protocol PurchasePlugin: AnyObject {
         _ completion: @escaping (Result<Set<Product>, Error>) -> Void
     )
     
+    func getWebPricePoints(
+        with ids: Set<String>,
+        _ completion: @escaping (Result<[WebPricePoint], Error>) -> Void
+    )
+    
     @available(iOS 12.2, *)
     func getPromotionalOffer(
         for productDiscount: ProductDiscount,

@@ -11,6 +11,7 @@ import PaltaCore
 enum PaymentsHTTPRequest: Equatable {
     case getFeatures(Environment, UserId)
     case getSubcriptions(Environment, UserId, Set<UUID>?)
+    case getPricePoints(Environment, UserId, Set<String>)
 }
 
 extension PaymentsHTTPRequest: CodableAutobuildingHTTPRequest {
@@ -20,6 +21,8 @@ extension PaymentsHTTPRequest: CodableAutobuildingHTTPRequest {
             return environemt
         case .getSubcriptions(let environemt, _, _):
             return environemt
+        case .getPricePoints(let environment, _, _):
+            return environment
         }
     }
     var bodyObject: AnyEncodable? {
@@ -29,12 +32,15 @@ extension PaymentsHTTPRequest: CodableAutobuildingHTTPRequest {
             
         case let .getSubcriptions(_, userId, subscriptionIds):
             return GetSubscriptionsRequestPayload(customerId: userId, onlyIds: subscriptionIds).typeErased
+            
+        case let .getPricePoints(_, userId, ids):
+            return GetPricePointsPayload(customerId: userId, ident: ids).typeErased
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .getSubcriptions, .getFeatures:
+        case .getSubcriptions, .getFeatures, .getPricePoints:
             return .post
         }
     }
@@ -50,6 +56,9 @@ extension PaymentsHTTPRequest: CodableAutobuildingHTTPRequest {
             
         case .getSubcriptions:
             return "/subscriptions-tracker/get-subscriptions"
+            
+        case .getPricePoints:
+            return "/showcase/get-price-points"
         }
     }
 }
