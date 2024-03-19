@@ -7,15 +7,15 @@
 
 import Foundation
 
-public struct WebPricePoint {
-    public struct IntroPayment {
+public struct WebPricePoint: Equatable {
+    public struct IntroPayment: Equatable {
         public let price: Decimal
         public let period: SubscriptionPeriod
         
         public let currencyCode: String
     }
     
-    public struct SubscriptionPayment {
+    public struct SubscriptionPayment: Equatable {
         public let introPrice: Decimal
         public let introPeriod: SubscriptionPeriod
         
@@ -25,12 +25,12 @@ public struct WebPricePoint {
         public let currencyCode: String
     }
     
-    public struct OneTimePayment {
+    public struct OneTimePayment: Equatable {
         public let price: Decimal
         public let currencyCode: String
     }
     
-    public enum PaymentType {
+    public enum PaymentType: Equatable {
         case intro(IntroPayment)
         case subscription(SubscriptionPayment)
         case oneTime(OneTimePayment)
