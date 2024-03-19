@@ -95,7 +95,7 @@ final class PricePointsResponseTest: XCTestCase {
         
         XCTAssertEqual(
             response.pricePoints.first?.nextPeriodType,
-            "minute"
+            "second"
         )
         
         XCTAssertEqual(

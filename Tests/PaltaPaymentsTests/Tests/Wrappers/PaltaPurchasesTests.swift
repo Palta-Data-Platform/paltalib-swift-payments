@@ -753,6 +753,70 @@ final class PaltaPurchasesTests: XCTestCase {
         wait(for: [failCalled], timeout: 0.1)
     }
     
+    func testGetWebPricePointsSuccess() {
+        let pricePoints: [Set<WebPricePoint>] = [
+            [.mock(ident: "1")],
+            [.mock(ident: "2"), .mock(ident: "3")],
+            []
+        ]
+        
+        let experctedPricePoints: Set<WebPricePoint> = [
+            .mock(ident: "1"),
+            .mock(ident: "2"),
+            .mock(ident: "3")
+        ]
+        
+        assert(pricePoints.count == mockPlugins.count)
+        
+        let identifiers: Set<String> = ["indetifier"]
+        
+        let successCalled = expectation(description: "Get price points successful")
+        instance.getWebPricePoints(with: identifiers) {
+            guard case .success(let pricePoints) = $0 else {
+                return
+            }
+            
+            XCTAssertEqual(Set(pricePoints), experctedPricePoints)
+            successCalled.fulfill()
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: pricePoints.count) { index in
+            mockPlugins[index].getWebPricePointsCompletion?(.success(Array(pricePoints[index])))
+        }
+        
+        mockPlugins.forEach {
+            XCTAssertNotNil($0.getWebPricePointsCompletion)
+            XCTAssertEqual($0.getWebPricePointsIdents, identifiers)
+        }
+        
+        wait(for: [successCalled], timeout: 0.1)
+    }
+    
+    func testGetWebPricePointsFailure() {
+        let pricePoints: [Set<WebPricePoint>] = [
+            [.mock(ident: "1")],
+            [.mock(ident: "2"), .mock(ident: "3")],
+            []
+        ]
+        
+        let failCalled = expectation(description: "Get price points failure")
+        instance.getWebPricePoints(with: [""]) {
+            guard case .failure = $0 else {
+                return
+            }
+            
+            failCalled.fulfill()
+        }
+        
+        DispatchQueue.concurrentPerform(iterations: mockPlugins.count) { index in
+            mockPlugins[index].getWebPricePointsCompletion?(
+                index != 1 ? .success(Array(pricePoints[index])) : .failure(PaymentsError.unknownError)
+            )
+        }
+        
+        wait(for: [failCalled], timeout: 0.1)
+    }
+    
     func testDelegateForwarded() {
         var callback: ((PurchasePluginResult<SuccessfulPurchase, Error>) -> Void)?
         mockPlugins[0].delegate?.purchasePlugin(mockPlugins[0], shouldPurchase: .mock()) {
