@@ -13,6 +13,7 @@ final class PaymentsAssemblyMock: PaymentsAssembly {
     let newFeaturesMock = NewFeaturesServiceMock()
     let paidFeaturesMock = PaidFeaturesServiceMock()
     let publicSubscriptionsMock = PublicSubscriptionsServiceMock()
+    let showcaseMock = ShowcaseServiceMock()
     
     var paidFeaturesService: PaidFeaturesService {
         paidFeaturesMock
@@ -27,6 +28,6 @@ final class PaymentsAssemblyMock: PaymentsAssembly {
     }
     
     var showcaseService: ShowcaseService {
-        ShowcaseServiceImpl(environment: URL(string: "")!, httpClient: HTTPClientImpl())
+        showcaseMock
     }
 }

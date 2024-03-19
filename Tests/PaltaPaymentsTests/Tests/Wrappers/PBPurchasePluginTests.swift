@@ -207,6 +207,63 @@ final class PBPurchasePluginTests: XCTestCase {
         XCTAssertNil(assemblyMock.publicSubscriptionsMock.userId)
     }
     
+    func testGetWebPPSuccess() {
+        let userId = UserId.uuid(UUID())
+        let ids: Set<String> = ["id1", "id2"]
+        let expectedPPs = [WebPricePoint.mock()]
+        assemblyMock.showcaseMock.result = .success(expectedPPs)
+        
+        let completionCalled = expectation(description: "Success called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getWebPricePoints(with: ids) { result in
+            guard case let .success(pricePoints) = result else {
+                return
+            }
+            
+            XCTAssertEqual(pricePoints, expectedPPs)
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.showcaseMock.userId, userId)
+        XCTAssertEqual(assemblyMock.showcaseMock.ids, ids)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetWebPPFail() {
+        let userId = UserId.uuid(UUID())
+        assemblyMock.showcaseMock.result = .failure(.invalidKey)
+        
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        plugin.getWebPricePoints(with: []) { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        XCTAssertEqual(assemblyMock.showcaseMock.userId, userId)
+        wait(for: [completionCalled], timeout: 0.1)
+    }
+    
+    func testGetWebPPNoLogin() {
+        let completionCalled = expectation(description: "Fail called")
+        
+        plugin.getWebPricePoints(with: []) { result in
+            guard case let .failure(error) = result, case .noUserId = (error as? PaymentsError) else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+        XCTAssertNil(assemblyMock.showcaseMock.userId)
+    }
+    
     func testGetProducts() {
         let completionCalled = expectation(description: "Not supported called")
         
