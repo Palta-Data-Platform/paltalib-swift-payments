@@ -13,15 +13,21 @@ extension PaidFeature {
         self.init(
             name: name,
             productIdentifier: nil,
-            paymentType: .subscription,
-            transactionType: .appStore,
-            isTrial: false,
-            isIntroductory: false,
-            willRenew: false,
-            startDate: startDate,
-            endDate: endDate,
-            cancellationDate: nil,
-            cancellationToken: nil
+            paymentType: endDate.flatMap { endDate in
+                    .subscription(
+                        .init(
+                            current: Subscription(
+                                startDate: startDate,
+                                endDate: endDate,
+                                cancellationDate: nil,
+                                cancellationToken: nil,
+                                isTrial: false,
+                                isIntroductory: false),
+                            next: nil
+                        )
+                    )
+            } ?? .oneOff,
+            transactionType: .appStore
         )
     }
 }

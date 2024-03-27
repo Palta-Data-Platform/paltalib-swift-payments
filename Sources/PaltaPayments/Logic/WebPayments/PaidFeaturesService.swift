@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(*, deprecated, message: "Use NewFeaturesService instead")
 protocol PaidFeaturesService {
     func getPaidFeatures(
         for userId: UserId,
@@ -15,7 +14,6 @@ protocol PaidFeaturesService {
     )
 }
 
-@available(*, deprecated, message: "Use NewFeaturesService instead")
 final class PaidFeaturesServiceImpl: PaidFeaturesService {
     private let subscriptionsService: SubscriptionsService
     private let featuresService: FeaturesService

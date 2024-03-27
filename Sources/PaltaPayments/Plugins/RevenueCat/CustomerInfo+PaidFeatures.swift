@@ -8,7 +8,6 @@
 import Foundation
 import RevenueCat
 
-@available(*, deprecated, message: "Use Feature instead")
 extension CustomerInfo {
     private var nonSubscriptionFeatures: [PaidFeature] {
         nonSubscriptions.map {
@@ -16,14 +15,7 @@ extension CustomerInfo {
                 name: $0.productIdentifier,
                 productIdentifier: $0.productIdentifier,
                 paymentType: .oneOff,
-                transactionType: .appStore,
-                isTrial: false,
-                isIntroductory: false,
-                willRenew: false,
-                startDate: $0.purchaseDate,
-                endDate: nil,
-                cancellationDate: nil,
-                cancellationToken: nil
+                transactionType: .appStore
             )
         }
     }
@@ -39,21 +31,25 @@ extension CustomerInfo {
             PaidFeature(
                 name: $0.identifier,
                 productIdentifier: $0.productIdentifier,
-                paymentType: .subscription,
-                transactionType: $0.store.transactionType,
-                isTrial: $0.periodType == .trial,
-                isIntroductory: $0.periodType == .intro,
-                willRenew: $0.willRenew,
-                startDate: $0.latestPurchaseDate ?? Date(timeIntervalSince1970: 0),
-                endDate: $0.expirationDate,
-                cancellationDate: $0.unsubscribeDetectedAt,
-                cancellationToken: $0.store == .promotional ? CancellationToken(pluginId: "web-laegacy", internalId: userId) : nil
+                paymentType: .subscription(
+                    .init(
+                        current: .init(
+                            startDate: $0.latestPurchaseDate ?? Date(timeIntervalSince1970: 0),
+                            endDate: $0.expirationDate ?? Date(timeIntervalSince1970: 0),
+                            cancellationDate: $0.unsubscribeDetectedAt,
+                            cancellationToken: $0.store == .promotional ? CancellationToken(pluginId: "web-laegacy", internalId: userId) : nil,
+                            isTrial: $0.periodType == .trial,
+                            isIntroductory: $0.periodType == .intro
+                        ),
+                        next: nil
+                    )
+                ),
+                transactionType: $0.store.transactionType
             )
         }
     }
 }
 
-@available(*, deprecated, message: "Use Feature instead")
 private extension Store {
     var transactionType: PaidFeature.TransactionType {
         switch self {

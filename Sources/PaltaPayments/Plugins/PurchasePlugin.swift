@@ -17,7 +17,6 @@ public protocol PurchasePlugin: AnyObject {
     
     func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void)
     
-    @available(*, deprecated, message: "")
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
     func getProducts(
@@ -37,14 +36,12 @@ public protocol PurchasePlugin: AnyObject {
         _ completion: @escaping (PurchasePluginResult<PromoOffer, Error>) -> Void
     )
     
-    @available(*, deprecated, message: "")
     func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
         _ completion: @escaping (PurchasePluginResult<SuccessfulPurchase, Error>) -> Void
     )
 
-    @available(*, deprecated, message: "")
     func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
     @available(iOS 14.0, *)

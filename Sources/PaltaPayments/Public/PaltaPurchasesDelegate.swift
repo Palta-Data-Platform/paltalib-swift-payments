@@ -8,12 +8,10 @@
 import Foundation
 
 public protocol PaltaPurchasesDelegate: AnyObject {
-    @available(*, deprecated, message: "")
     typealias DefermentCallback = (@escaping (Result<SuccessfulPurchase, Error>) -> Void) -> Void
     
     typealias DefermentCallback2 = (@escaping (Result<SuccessfulPurchase2, Error>) -> Void) -> Void
     
-    @available(*, deprecated, message: "")
     func purchases(
         _ purchases: PaltaPurchases,
         shouldPurchase promoProduct: Product,

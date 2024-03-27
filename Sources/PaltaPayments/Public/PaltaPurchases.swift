@@ -70,7 +70,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    @available(*, deprecated, message: "Use getFeatures and/or getSubscriptions instead")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         checkSetupFinished()
         
@@ -143,7 +142,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    @available(*, deprecated, message: "Use purchase2 method instead")
     public func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
@@ -164,7 +162,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         fatalError()
     }
     
-    @available(*, deprecated, message: "Use restorePurchases with Features callback instead")
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         checkSetupFinished()
         
@@ -323,7 +320,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    @available(*, deprecated, message: "Use `callAndCollectFeatures` instead")
     private func callAndCollectPaidFeatures(
         to completion: @escaping (Result<PaidFeatures, Error>) -> Void,
         call: (PurchasePlugin, @escaping (Result<PaidFeatures, Error>) -> Void) -> Void

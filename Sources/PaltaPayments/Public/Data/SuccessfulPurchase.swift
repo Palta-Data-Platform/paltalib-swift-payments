@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(*, deprecated, message: "Use SuccessfulPurchase2 instead")
 public struct SuccessfulPurchase {
     public let transaction: Transaction
     public let paidFeatures: PaidFeatures

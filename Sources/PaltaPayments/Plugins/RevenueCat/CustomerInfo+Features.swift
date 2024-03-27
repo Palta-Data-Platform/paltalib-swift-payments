@@ -36,7 +36,6 @@ extension CustomerInfo {
     }
 }
 
-@available(*, deprecated, message: "Use Feature instead")
 private extension Store {
     var transactionType: PaidFeature.TransactionType {
         switch self {

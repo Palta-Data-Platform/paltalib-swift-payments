@@ -7,44 +7,54 @@
 
 import Foundation
 
-@available(*, deprecated, message: "This entity was separated into Feature and Subscription")
 public struct PaidFeature: Hashable {
-    public enum PaymentType {
-        case subscription
+    public enum PaymentType: Hashable {
+        case subscription(Subscriptions)
         case oneOff
         case consumable
     }
     
-    public enum TransactionType {
+    public enum TransactionType: Hashable {
         case web
         case appStore
         case googlePlay
+    }
+    
+    public struct Subscription: Hashable {
+        public let startDate: Date
+        public let endDate: Date
+        public let cancellationDate: Date?
+        
+        public let cancellationToken: CancellationToken?
+        
+        public let isTrial: Bool
+        public let isIntroductory: Bool
+    }
+    
+    public struct Subscriptions: Hashable {
+        public let current: Subscription
+        public let next: Subscription?
     }
     
     public let name: String
     public let productIdentifier: String?
     public let paymentType: PaymentType
     public let transactionType: TransactionType
-    public let isTrial: Bool
-    public let isIntroductory: Bool
-    public let willRenew: Bool
-    
-    public let startDate: Date
-    public let endDate: Date?
-    public let cancellationDate: Date?
-    
-    public let cancellationToken: CancellationToken?
 }
 
-@available(*, deprecated, message: "This entity was separated into Feature and Subscription")
 extension PaidFeature {
     public var isLifetime: Bool {
-        endDate == nil
+        paymentType == .oneOff
     }
     
     public var isActive: Bool {
+        guard case let .subscription(subscriptions) = paymentType else {
+            return true
+        }
+        
         let now = Date()
         
-        return now > startDate && endDate.map { $0 > now } ?? true
+        return now > subscriptions.current.startDate
+        && subscriptions.current.endDate > now
     }
 }

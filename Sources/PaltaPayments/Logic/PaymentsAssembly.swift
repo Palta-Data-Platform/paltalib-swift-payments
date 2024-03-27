@@ -9,7 +9,6 @@ import Foundation
 import PaltaCore
 
 protocol PaymentsAssembly {
-    @available(*, deprecated, message: "Use `newFeaturesService` instead")
     var paidFeaturesService: PaidFeaturesService { get }
     
     var newFeaturesService: NewFeaturesService { get }
@@ -18,7 +17,6 @@ protocol PaymentsAssembly {
 }
 
 final class RealPaymentsAssembly: PaymentsAssembly {
-    @available(*, deprecated, message: "Use `newFeaturesService` instead")
     var paidFeaturesService: PaidFeaturesService {
         webPaymentsAssembly.paidFeaturesService
     }

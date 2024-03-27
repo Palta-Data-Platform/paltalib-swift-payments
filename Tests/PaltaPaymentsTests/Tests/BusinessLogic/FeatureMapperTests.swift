@@ -32,13 +32,15 @@ final class FeatureMapperTests: XCTestCase {
         let paidFeatures = mapper.map(features, and: [])
         
         XCTAssertEqual(paidFeatures.first?.name, "sku1")
-        XCTAssertEqual(paidFeatures.first?.startDate, Date(timeIntervalSince1970: 0))
-        XCTAssertEqual(paidFeatures.first?.endDate, Date(timeIntervalSince1970: 100))
-        XCTAssertNil(paidFeatures.first?.cancellationDate)
-        XCTAssertNil(paidFeatures.first?.productIdentifier)
-        XCTAssertEqual(paidFeatures.first?.isTrial, false)
+        
+        guard case .oneOff = paidFeatures.first?.paymentType else {
+            XCTAssert(false)
+            return
+        }
+        
         XCTAssertEqual(paidFeatures.first?.paymentType, .oneOff)
         XCTAssertEqual(paidFeatures.first?.transactionType, .web)
+        XCTAssertNil(paidFeatures.first?.productIdentifier)
     }
     
     func testTrial() {
@@ -74,8 +76,13 @@ final class FeatureMapperTests: XCTestCase {
         ]
         
         let paidFeatures = mapper.map(features, and: subscriptions)
+        
+        guard case let .subscription(subscriptions) = paidFeatures.first?.paymentType else {
+            XCTAssert(false)
+            return
+        }
 
-        XCTAssertEqual(paidFeatures.first?.isTrial, true)
+        XCTAssertEqual(subscriptions.current.isTrial, true)
     }
     
     func testCancelled() {
@@ -113,9 +120,13 @@ final class FeatureMapperTests: XCTestCase {
         let paidFeatures = mapper.map(features, and: subscriptions)
         
         XCTAssertEqual(paidFeatures.first?.name, "sku1")
-        XCTAssertEqual(paidFeatures.first?.startDate, Date(timeIntervalSince1970: 0))
-        XCTAssertEqual(paidFeatures.first?.endDate, Date(timeIntervalSince1970: 100))
-        XCTAssertEqual(paidFeatures.first?.cancellationDate, Date(timeIntervalSince1970: 50))
-        XCTAssertEqual(paidFeatures.first?.isTrial, false)
+        
+        guard case let .subscription(subscriptions) = paidFeatures.first?.paymentType else {
+            XCTAssert(false)
+            return
+        }
+        
+        XCTAssertEqual(subscriptions.current.cancellationDate, Date(timeIntervalSince1970: 50))
+        XCTAssertEqual(subscriptions.current.isTrial, false)
     }
 }

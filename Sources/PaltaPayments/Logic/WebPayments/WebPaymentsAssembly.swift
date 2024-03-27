@@ -9,14 +9,12 @@ import Foundation
 import PaltaCore
 
 final class WebPaymentsAssembly {
-    @available(*, deprecated, message: "")
     let paidFeaturesService: PaidFeaturesService
     
     let newFeaturesService: NewFeaturesService
     let publicSubscriptionsService: PublicSubscriptionsService
     let showcaseService: ShowcaseService
     
-    @available(*, deprecated, message: "")
     private init(
         paidFeaturesService: PaidFeaturesService,
         newFeaturesService: NewFeaturesService,
@@ -31,7 +29,6 @@ final class WebPaymentsAssembly {
 }
 
 extension WebPaymentsAssembly {
-    @available(*, deprecated, message: "")
     convenience init(apiKey: String, environment: Environment, coreAssembly: CoreAssembly) {
         coreAssembly.httpClient.mandatoryHeaders = ["x-api-key": apiKey]
 

@@ -20,7 +20,6 @@ public protocol PaltaPurchasesProtocol: AnyObject {
     
     func logOut()
     
-    @available(*, deprecated, message: "Use getFeatures and/or getSubscriptions instead")
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
     func getFeatures(_ completion: @escaping (Result<Features, Error>) -> Void)
@@ -44,7 +43,6 @@ public protocol PaltaPurchasesProtocol: AnyObject {
         _ completion: @escaping (Result<PromoOffer, Error>) -> Void
     )
     
-    @available(*, deprecated, message: "Use purchase2 method instead")
     func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
@@ -57,7 +55,6 @@ public protocol PaltaPurchasesProtocol: AnyObject {
         _ completion: @escaping (Result<SuccessfulPurchase2, Error>) -> Void
     )
     
-    @available(*, deprecated, message: "Use restorePurchases with Features callback instead")
     func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
     func restorePurchases(completion: @escaping (Result<Features, Error>) -> Void)

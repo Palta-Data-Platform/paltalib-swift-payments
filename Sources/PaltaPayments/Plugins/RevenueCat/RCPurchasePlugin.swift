@@ -55,7 +55,6 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
-    @available(*, deprecated, message: "")
     public func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         purchases.getCustomerInfo { [purchases] customerInfo, error in
             if let error = error {
@@ -105,7 +104,6 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
-    @available(*, deprecated, message: "")
     public func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
@@ -136,7 +134,6 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
-    @available(*, deprecated, message: "")
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         purchases.restorePurchases { [purchases] customerInfo, error in
             if let paidFeatures = customerInfo?.paidFeatures(userId: purchases.appUserID) {
@@ -181,7 +178,6 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         completion(.notSupported)
     }
     
-    @available(*, deprecated, message: "")
     private func makeRCCompletionBlock(
         from pluginCompletion: @escaping (PurchasePluginResult<SuccessfulPurchase, Error>) -> Void
     ) -> @Sendable (StoreTransaction?, CustomerInfo?, Error?, Bool) -> Void {
