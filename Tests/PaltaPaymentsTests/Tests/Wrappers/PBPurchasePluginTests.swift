@@ -307,4 +307,22 @@ final class PBPurchasePluginTests: XCTestCase {
         
         wait(for: [completionCalled], timeout: 0.1)
     }
+    
+    func testPurchaseWebPricePoint() {
+        let completionCalled = expectation(description: "Not supported called")
+        
+        plugin.purchase(.mock(originalEntity: WebPricePoint.mock()), with: nil) { result in
+            guard
+                case let .failure(error) = result,
+                let paymentsError = error as? PaymentsError,
+                case .webPaymentsNotSupported = paymentsError
+            else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+    }
 }

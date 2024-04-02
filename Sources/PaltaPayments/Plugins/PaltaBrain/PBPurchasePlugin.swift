@@ -127,7 +127,11 @@ public final class PBPurchasePlugin: PurchasePlugin {
         with promoOffer: PromoOffer?,
         _ completion: @escaping (PurchasePluginResult<SuccessfulPurchase, Error>) -> Void
     ) {
-        completion(.notSupported)
+        if product.originalEntity is WebPricePoint {
+            completion(.failure(PaymentsError.webPaymentsNotSupported))
+        } else {
+            completion(.notSupported)
+        }
     }
     
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
