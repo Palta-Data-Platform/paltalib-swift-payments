@@ -9,20 +9,37 @@ import Foundation
 @testable import PaltaPayments
 
 final class ShowcaseServiceMock: ShowcaseService {
-    var result: Result<[WebPricePoint], PaymentsError>?
-    var ids: Set<String>?
-    var userId: UserId?
+    var getPricePointsResult: Result<[WebPricePoint], PaymentsError>?
+    var getPricePointsIds: Set<String>?
+    var getPricePointsUserId: UserId?
+    
+    var getProductsResult: Result<Set<Product>, PaymentsError>?
+    var getProductsIds: [String]?
+    var getProductsUserId: UserId?
     
     func getPricePoints(
         with ids: Set<String>,
         for userId: UserId,
         completion: @escaping (Result<[WebPricePoint], PaymentsError>) -> Void
     ) {
-        self.ids = ids
-        self.userId = userId
+        self.getPricePointsIds = ids
+        self.getPricePointsUserId = userId
     
-        if let result {
-            completion(result)
+        if let getPricePointsResult {
+            completion(getPricePointsResult)
+        }
+    }
+    
+    func getProducts(
+        with ids: [String],
+        for userId: UserId,
+        completion: @escaping (Result<Set<Product>, PaymentsError>) -> Void
+    ) {
+        self.getProductsIds = ids
+        self.getProductsUserId = userId
+    
+        if let getProductsResult {
+            completion(getProductsResult)
         }
     }
 }

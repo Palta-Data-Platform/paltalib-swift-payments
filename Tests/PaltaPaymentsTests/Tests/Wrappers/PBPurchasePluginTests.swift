@@ -211,7 +211,7 @@ final class PBPurchasePluginTests: XCTestCase {
         let userId = UserId.uuid(UUID())
         let ids: Set<String> = ["id1", "id2"]
         let expectedPPs = [WebPricePoint.mock()]
-        assemblyMock.showcaseMock.result = .success(expectedPPs)
+        assemblyMock.showcaseMock.getPricePointsResult = .success(expectedPPs)
         
         let completionCalled = expectation(description: "Success called")
         
@@ -225,14 +225,14 @@ final class PBPurchasePluginTests: XCTestCase {
             completionCalled.fulfill()
         }
         
-        XCTAssertEqual(assemblyMock.showcaseMock.userId, userId)
-        XCTAssertEqual(assemblyMock.showcaseMock.ids, ids)
+        XCTAssertEqual(assemblyMock.showcaseMock.getPricePointsUserId, userId)
+        XCTAssertEqual(assemblyMock.showcaseMock.getPricePointsIds, ids)
         wait(for: [completionCalled], timeout: 0.1)
     }
     
     func testGetWebPPFail() {
         let userId = UserId.uuid(UUID())
-        assemblyMock.showcaseMock.result = .failure(.invalidKey)
+        assemblyMock.showcaseMock.getPricePointsResult = .failure(.invalidKey)
         
         let completionCalled = expectation(description: "Fail called")
         
@@ -245,7 +245,7 @@ final class PBPurchasePluginTests: XCTestCase {
             completionCalled.fulfill()
         }
         
-        XCTAssertEqual(assemblyMock.showcaseMock.userId, userId)
+        XCTAssertEqual(assemblyMock.showcaseMock.getPricePointsUserId, userId)
         wait(for: [completionCalled], timeout: 0.1)
     }
     
@@ -261,23 +261,73 @@ final class PBPurchasePluginTests: XCTestCase {
         }
         
         wait(for: [completionCalled], timeout: 0.1)
-        XCTAssertNil(assemblyMock.showcaseMock.userId)
+        XCTAssertNil(assemblyMock.showcaseMock.getPricePointsUserId)
     }
     
-    func testGetProducts() {
-        let completionCalled = expectation(description: "Not supported called")
+    func testGetProductsSuccess() {
+        let completionCalled = expectation(description: "Success called")
+        let userId = UserId.uuid(UUID())
+        let productIds = [UUID().uuidString]
         
-        plugin.getProducts(with: []) { result in
+        assemblyMock.showcaseMock.getProductsResult = .success([.mock()])
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        
+        plugin.getProducts(with: productIds) { result in
             guard case .success(let products) = result else {
                 return
             }
             
-            XCTAssert(products.isEmpty)
+            XCTAssertEqual(products.count, 1)
             
             completionCalled.fulfill()
         }
         
         wait(for: [completionCalled], timeout: 0.1)
+        
+        XCTAssertEqual(assemblyMock.showcaseMock.getProductsUserId, userId)
+        XCTAssertEqual(assemblyMock.showcaseMock.getProductsIds, productIds)
+    }
+    
+    func testGetProductsNoLogin() {
+        let completionCalled = expectation(description: "No login called")
+        
+        assemblyMock.showcaseMock.getProductsResult = .success([.mock()])
+        
+        plugin.getProducts(with: [UUID().uuidString]) { result in
+            guard case let .failure(error) = result, case .noUserId = (error as? PaymentsError) else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+        
+        XCTAssertNil(assemblyMock.showcaseMock.getProductsUserId)
+    }
+    
+    func testGetProductsFail() {
+        let completionCalled = expectation(description: "Fail called")
+        let userId = UserId.uuid(UUID())
+        let productIds = [UUID().uuidString]
+        
+        assemblyMock.showcaseMock.getProductsResult = .failure(.cancelledByUser)
+        
+        plugin.logIn(appUserId: userId, completion: { _ in })
+        
+        plugin.getProducts(with: productIds) { result in
+            guard case .failure = result else {
+                return
+            }
+            
+            completionCalled.fulfill()
+        }
+        
+        wait(for: [completionCalled], timeout: 0.1)
+        
+        XCTAssertEqual(assemblyMock.showcaseMock.getProductsUserId, userId)
+        XCTAssertEqual(assemblyMock.showcaseMock.getProductsIds, productIds)
     }
     
     func testGetOffer() {

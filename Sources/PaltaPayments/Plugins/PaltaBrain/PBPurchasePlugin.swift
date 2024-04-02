@@ -69,34 +69,8 @@ public final class PBPurchasePlugin: PurchasePlugin {
             return
         }
         
-        assembly.showcaseService.getPricePoints(with: Set(productIdentifiers), for: userId) {
-            completion($0
-                .mapError { $0 as Error }
-                .map {
-                    $0.map {
-                        Product(
-                            productType: $0.payment.productType,
-                            productIdentifier: $0.ident,
-                            localizedDescription: "",
-                            localizedTitle: $0.name,
-                            currencyCode: $0.payment.currencyCode,
-                            price: $0.payment.price,
-                            localizedPriceString: NumberFormatter
-                                .formatter(for: $0.payment.currencyCode)
-                                .string(from: $0.payment.price as NSDecimalNumber)
-                            ?? "",
-                            formatter: NumberFormatter.formatter(for: $0.payment.currencyCode),
-                            subscriptionPeriod: $0.payment.subscriptionPeriod,
-                            introductoryDiscount: $0.payment.introductoryDiscount,
-                            discounts: [],
-                            originalEntity: $0
-                        )
-                    }
-                }
-                .map {
-                    Set($0)
-                }
-            )
+        assembly.showcaseService.getProducts(with: productIdentifiers, for: userId) { result in
+            completion(result.mapError { $0 as Error })
         }
     }
     
@@ -166,95 +140,5 @@ public final class PBPurchasePlugin: PurchasePlugin {
 public extension PBPurchasePlugin {
     convenience init(apiKey: String, environment: Environment) {
         self.init(assembly: RealPaymentsAssembly(apiKey: apiKey, environment: environment))
-    }
-}
-
-extension WebPricePoint.PaymentType {
-    var productType: ProductType {
-        switch self {
-        case .intro:
-            return .nonRenewableSubscription
-        case .subscription:
-            return .autoRenewableSubscription
-        case .oneTime, .freebie:
-            return .nonConsumable
-        }
-    }
-    
-    var price: Decimal {
-        switch self {
-        case .intro(let introPayment):
-            return introPayment.price
-        case .subscription(let subscriptionPayment):
-            return subscriptionPayment.price
-        case .oneTime(let oneTimePayment):
-            return oneTimePayment.price
-        case .freebie:
-            return 0
-        }
-    }
-    
-    var currencyCode: String {
-        switch self {
-        case .intro(let introPayment):
-            return introPayment.currencyCode
-        case .subscription(let subscriptionPayment):
-            return subscriptionPayment.currencyCode
-        case .oneTime(let oneTimePayment):
-            return oneTimePayment.currencyCode
-        case .freebie:
-            return ""
-        }
-    }
-    
-    var subscriptionPeriod: SubscriptionPeriod? {
-        switch self {
-        case .intro(let introPayment):
-            return introPayment.period
-        case .subscription(let subscriptionPayment):
-            return subscriptionPayment.period
-        case .oneTime, .freebie:
-            return nil
-        }
-    }
-    
-    var introductoryDiscount: ProductDiscount? {
-        guard case let .subscription(payment) = self else {
-            return nil
-        }
-
-        guard payment.period != payment.introPeriod || payment.price != payment.introPrice else {
-            return nil
-        }
-        
-        return ProductDiscount(
-            offerIdentifier: nil,
-            currencyCode: payment.currencyCode,
-            price: payment.introPrice,
-            numberOfPeriods: 1,
-            subscriptionPeriod: payment.introPeriod,
-            localizedPriceString: NumberFormatter
-                .formatter(for: payment.currencyCode)
-                .string(from: payment.introPrice as NSDecimalNumber)
-            ?? "",
-            originalEntity: ""
-        )
-    }
-}
-
-extension NumberFormatter {
-    private static var formatters: [String: NumberFormatter] = [:]
-    
-    static func formatter(for currency: String) -> NumberFormatter {
-        if let cached = formatters[currency] {
-            return cached
-        }
-        
-        let formatter = NumberFormatter()
-        formatter.currencyCode = currency
-        formatter.numberStyle = .currency
-        formatters[currency] = formatter
-        
-        return formatter
     }
 }

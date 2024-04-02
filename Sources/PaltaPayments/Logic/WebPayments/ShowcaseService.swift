@@ -14,6 +14,12 @@ protocol ShowcaseService {
         for userId: UserId,
         completion: @escaping (Result<[WebPricePoint], PaymentsError>) -> Void
     )
+    
+    func getProducts(
+        with ids: [String],
+        for userId: UserId,
+        completion: @escaping (Result<Set<Product>, PaymentsError>) -> Void
+    )
 }
 
 final class ShowcaseServiceImpl: ShowcaseService {
@@ -41,6 +47,41 @@ final class ShowcaseServiceImpl: ShowcaseService {
             case .failure(let error):
                 completion(.failure(PaymentsError(networkError: error)))
             }
+        }
+    }
+    
+    func getProducts(
+        with ids: [String],
+        for userId: UserId,
+        completion: @escaping (Result<Set<Product>, PaymentsError>) -> Void
+    ) {
+        getPricePoints(with: Set(ids), for: userId) {
+            completion($0
+                .map {
+                    $0.map {
+                        Product(
+                            productType: $0.payment.productType,
+                            productIdentifier: $0.ident,
+                            localizedDescription: "",
+                            localizedTitle: $0.name,
+                            currencyCode: $0.payment.currencyCode,
+                            price: $0.payment.price,
+                            localizedPriceString: NumberFormatter
+                                .formatter(for: $0.payment.currencyCode)
+                                .string(from: $0.payment.price as NSDecimalNumber)
+                            ?? "",
+                            formatter: NumberFormatter.formatter(for: $0.payment.currencyCode),
+                            subscriptionPeriod: $0.payment.subscriptionPeriod,
+                            introductoryDiscount: $0.payment.introductoryDiscount,
+                            discounts: [],
+                            originalEntity: $0
+                        )
+                    }
+                }
+                .map {
+                    Set($0)
+                }
+            )
         }
     }
     
@@ -151,5 +192,78 @@ final class ShowcaseServiceImpl: ShowcaseService {
         default:
             return nil
         }
+    }
+}
+
+private extension WebPricePoint.PaymentType {
+    var productType: ProductType {
+        switch self {
+        case .intro:
+            return .nonRenewableSubscription
+        case .subscription:
+            return .autoRenewableSubscription
+        case .oneTime, .freebie:
+            return .nonConsumable
+        }
+    }
+    
+    var price: Decimal {
+        switch self {
+        case .intro(let introPayment):
+            return introPayment.price
+        case .subscription(let subscriptionPayment):
+            return subscriptionPayment.price
+        case .oneTime(let oneTimePayment):
+            return oneTimePayment.price
+        case .freebie:
+            return 0
+        }
+    }
+    
+    var currencyCode: String {
+        switch self {
+        case .intro(let introPayment):
+            return introPayment.currencyCode
+        case .subscription(let subscriptionPayment):
+            return subscriptionPayment.currencyCode
+        case .oneTime(let oneTimePayment):
+            return oneTimePayment.currencyCode
+        case .freebie:
+            return ""
+        }
+    }
+    
+    var subscriptionPeriod: SubscriptionPeriod? {
+        switch self {
+        case .intro(let introPayment):
+            return introPayment.period
+        case .subscription(let subscriptionPayment):
+            return subscriptionPayment.period
+        case .oneTime, .freebie:
+            return nil
+        }
+    }
+    
+    var introductoryDiscount: ProductDiscount? {
+        guard case let .subscription(payment) = self else {
+            return nil
+        }
+
+        guard payment.period != payment.introPeriod || payment.price != payment.introPrice else {
+            return nil
+        }
+        
+        return ProductDiscount(
+            offerIdentifier: nil,
+            currencyCode: payment.currencyCode,
+            price: payment.introPrice,
+            numberOfPeriods: 1,
+            subscriptionPeriod: payment.introPeriod,
+            localizedPriceString: NumberFormatter
+                .formatter(for: payment.currencyCode)
+                .string(from: payment.introPrice as NSDecimalNumber)
+            ?? "",
+            originalEntity: ""
+        )
     }
 }
