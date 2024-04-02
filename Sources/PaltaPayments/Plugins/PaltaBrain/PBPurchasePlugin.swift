@@ -81,7 +81,10 @@ public final class PBPurchasePlugin: PurchasePlugin {
                             localizedTitle: $0.name,
                             currencyCode: $0.payment.currencyCode,
                             price: $0.payment.price,
-                            localizedPriceString: NumberFormatter.formatter(for: $0.payment.currencyCode).string(from: $0.payment.price as NSDecimalNumber) ?? "",
+                            localizedPriceString: NumberFormatter
+                                .formatter(for: $0.payment.currencyCode)
+                                .string(from: $0.payment.price as NSDecimalNumber)
+                            ?? "",
                             formatter: NumberFormatter.formatter(for: $0.payment.currencyCode),
                             subscriptionPeriod: $0.payment.subscriptionPeriod,
                             introductoryDiscount: $0.payment.introductoryDiscount,
@@ -226,7 +229,10 @@ extension WebPricePoint.PaymentType {
             price: payment.introPrice,
             numberOfPeriods: 1,
             subscriptionPeriod: payment.introPeriod,
-            localizedPriceString: "",
+            localizedPriceString: NumberFormatter
+                .formatter(for: payment.currencyCode)
+                .string(from: payment.introPrice as NSDecimalNumber)
+            ?? "",
             originalEntity: ""
         )
     }
