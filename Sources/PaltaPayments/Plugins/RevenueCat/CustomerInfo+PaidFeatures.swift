@@ -14,6 +14,7 @@ extension CustomerInfo {
             PaidFeature(
                 name: $0.productIdentifier,
                 productIdentifier: $0.productIdentifier,
+                pricePointIdent: nil,
                 paymentType: .oneOff,
                 transactionType: .appStore
             )
@@ -31,6 +32,7 @@ extension CustomerInfo {
             PaidFeature(
                 name: $0.identifier,
                 productIdentifier: $0.productIdentifier,
+                pricePointIdent: nil,
                 paymentType: .subscription(
                     .init(
                         current: .init(

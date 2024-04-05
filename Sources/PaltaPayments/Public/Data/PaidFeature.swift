@@ -38,6 +38,7 @@ public struct PaidFeature: Hashable {
     
     public let name: String
     public let productIdentifier: String?
+    public let pricePointIdent: String?
     public let paymentType: PaymentType
     public let transactionType: TransactionType
 }

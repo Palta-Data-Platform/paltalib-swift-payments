@@ -13,6 +13,7 @@ extension PaidFeature {
         self.init(
             name: name,
             productIdentifier: nil,
+            pricePointIdent: nil,
             paymentType: endDate.flatMap { endDate in
                     .subscription(
                         .init(

@@ -21,6 +21,7 @@ final class FeatureMapperImpl: FeatureMapper {
             PaidFeature(
                 name: $0.feature,
                 productIdentifier: nil,
+                pricePointIdent: $0.lastSubscriptionId.flatMap { subscriptionById[$0] }?.pricePoint.ident,
                 paymentType: $0.paymentType(subscriptions: subscriptionById),
                 transactionType: .web
             )
