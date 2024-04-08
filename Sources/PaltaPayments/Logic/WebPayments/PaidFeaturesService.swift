@@ -56,7 +56,7 @@ final class PaidFeaturesServiceImpl: PaidFeaturesService {
             return
         }
         
-        subscriptionsService.getSubscriptions(with: subscriptionIds, for: userId) { [weak self] result in
+        subscriptionsService.getSubscriptions(with: nil, for: userId) { [weak self] result in
             switch result {
             case .success(let subscriptions):
                 self?.prepareData(
