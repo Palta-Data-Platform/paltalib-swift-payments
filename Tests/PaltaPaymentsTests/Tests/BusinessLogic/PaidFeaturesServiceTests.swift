@@ -52,7 +52,7 @@ final class PaidFeaturesServiceTests: XCTestCase {
         
         XCTAssertEqual(featuresMock.userId, userId)
         XCTAssertEqual(subscriptionsMock.userId, userId)
-        XCTAssertEqual(subscriptionsMock.ids, [subscriptionId])
+        XCTAssertEqual(subscriptionsMock.ids, nil)
         XCTAssertEqual(mapperMock.features, [.mock(lastSubscriptionId: subscriptionId)])
         XCTAssertEqual(mapperMock.subscriptions, subscriptions)
         
