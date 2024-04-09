@@ -60,8 +60,8 @@ public final class PBPurchasePlugin: PurchasePlugin {
         }
     }
     
-    public func getProducts(
-        with productIdentifiers: [String],
+    public func getProductsAndPricePoints(
+        with identifiers: [String],
         _ completion: @escaping (Result<Set<Product>, Error>) -> Void
     ) {
         guard let userId = userId else {
@@ -69,7 +69,7 @@ public final class PBPurchasePlugin: PurchasePlugin {
             return
         }
         
-        assembly.showcaseService.getProducts(with: productIdentifiers, for: userId) { result in
+        assembly.showcaseService.getProducts(with: identifiers, for: userId) { result in
             completion(result.mapError { $0 as Error })
         }
     }

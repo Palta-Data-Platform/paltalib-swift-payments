@@ -19,8 +19,8 @@ public protocol PurchasePlugin: AnyObject {
     
     func getPaidFeatures(_ completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
-    func getProducts(
-        with productIdentifiers: [String],
+    func getProductsAndPricePoints(
+        with identifiers: [String],
         _ completion: @escaping (Result<Set<Product>, Error>) -> Void
     )
     

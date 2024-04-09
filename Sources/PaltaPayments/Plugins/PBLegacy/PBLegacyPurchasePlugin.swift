@@ -37,7 +37,7 @@ public final class PBLegacyPurchasePlugin: PurchasePlugin {
         completion(.success(PaidFeatures()))
     }
     
-    public func getProducts(with productIdentifiers: [String], _ completion: @escaping (Result<Set<Product>, Error>) -> Void) {
+    public func getProductsAndPricePoints(with identifiers: [String], _ completion: @escaping (Result<Set<Product>, Error>) -> Void) {
         completion(.success([]))
     }
     

@@ -103,12 +103,21 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         )
     }
     
+    
+    @available(*, deprecated, message: "Method was renamed to `getProductsAndPricePoints`")
     public func getProducts(
         with productIdentifiers: [String],
         completion: @escaping (Result<Set<Product>, Error>) -> Void
     ) {
+        getProductsAndPricePoints(with: productIdentifiers, completion: completion)
+    }
+    
+    public func getProductsAndPricePoints(
+        with identifiers: [String],
+        completion: @escaping (Result<Set<Product>, Error>) -> Void
+    ) {
         callAndCollect(call: { plugIn, callback in
-            plugIn.getProducts(with: productIdentifiers, callback)
+            plugIn.getProductsAndPricePoints(with: identifiers, callback)
         }, completion: { result in
             completion(
                 result.map { $0.reduce([]) { $0.union($1) } }

@@ -273,7 +273,7 @@ final class PBPurchasePluginTests: XCTestCase {
         
         plugin.logIn(appUserId: userId, completion: { _ in })
         
-        plugin.getProducts(with: productIds) { result in
+        plugin.getProductsAndPricePoints(with: productIds) { result in
             guard case .success(let products) = result else {
                 return
             }
@@ -294,7 +294,7 @@ final class PBPurchasePluginTests: XCTestCase {
         
         assemblyMock.showcaseMock.getProductsResult = .success([.mock()])
         
-        plugin.getProducts(with: [UUID().uuidString]) { result in
+        plugin.getProductsAndPricePoints(with: [UUID().uuidString]) { result in
             guard case let .failure(error) = result, case .noUserId = (error as? PaymentsError) else {
                 return
             }
@@ -316,7 +316,7 @@ final class PBPurchasePluginTests: XCTestCase {
         
         plugin.logIn(appUserId: userId, completion: { _ in })
         
-        plugin.getProducts(with: productIds) { result in
+        plugin.getProductsAndPricePoints(with: productIds) { result in
             guard case .failure = result else {
                 return
             }

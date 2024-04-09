@@ -65,11 +65,11 @@ public final class RCPurchasePlugin: NSObject, PurchasePlugin {
         }
     }
     
-    public func getProducts(
-        with productIdentifiers: [String],
+    public func getProductsAndPricePoints(
+        with identifiers: [String],
         _ completion: @escaping (Result<Set<Product>, Error>) -> Void
     ) {
-        purchases.getProducts(productIdentifiers) { products in
+        purchases.getProducts(identifiers) { products in
             completion(.success(Set(products.map(Product.init))))
         }
     }

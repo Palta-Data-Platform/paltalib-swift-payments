@@ -56,7 +56,7 @@ final class PurchasePluginMock: PurchasePlugin {
         getSubscriptionsCompletion = completion
     }
     
-    func getProducts(with productIdentifiers: [String], _ completion: @escaping (Result<Set<Product>, Error>) -> Void) {
+    func getProductsAndPricePoints(with productIdentifiers: [String], _ completion: @escaping (Result<Set<Product>, Error>) -> Void) {
         getProductsCompletion = completion
         getProductsIndentifiers = productIdentifiers
     }
