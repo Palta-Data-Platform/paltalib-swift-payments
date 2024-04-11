@@ -23,6 +23,10 @@ public enum ProductType: Hashable {
 
 public struct SubscriptionPeriod: Hashable {
     public enum Unit: Int, Hashable {
+        /// A subscription period unit of a second.
+        case second = -2
+        /// A subscription period unit of a minute.
+        case minute = -1
         /// A subscription period unit of a day.
         case day = 0
         /// A subscription period unit of a week.

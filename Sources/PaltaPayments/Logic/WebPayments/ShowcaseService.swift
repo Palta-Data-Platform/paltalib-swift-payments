@@ -181,6 +181,10 @@ final class ShowcaseServiceImpl: ShowcaseService {
     
     private func mapPeriodType(_ type: String) -> SubscriptionPeriod.Unit? {
         switch type {
+        case "second":
+            return .second
+        case "minute":
+            return .minute
         case "day":
             return .day
         case "week":
