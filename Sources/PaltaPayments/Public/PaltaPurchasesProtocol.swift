@@ -26,7 +26,13 @@ public protocol PaltaPurchasesProtocol: AnyObject {
     
     func getSubscriptions(_ completion: @escaping (Result<[Subscription], Error>) -> Void)
     
+    @available(*, deprecated, message: "Method was renamed to `getProductsAndPricePoints`")
     func getProducts(
+        with productIdentifiers: [String],
+        completion: @escaping (Result<Set<Product>, Error>) -> Void
+    )
+    
+    func getProductsAndPricePoints(
         with productIdentifiers: [String],
         completion: @escaping (Result<Set<Product>, Error>) -> Void
     )
