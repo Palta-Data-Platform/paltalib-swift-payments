@@ -1,119 +1,64 @@
-# Swift SDK for Palta MPP
+# Development
 
-This SDK is used to manage access to paid features in iOS apps.
-
-## Plugin system
-This SDK allows simultaneous access to several revenue management systems. Their data is combined together in the output. Currently, 3 systems are supported: Palta MPP, RevenueCat and Palta legacy web payments.
-### Palta MPP
-To setup a Palta MPP plugin, you need to know an API key and a host for your API instance:
+## More about plugins
+Because we use different sources of data in form of plugins, we need to merge this data. Entity responsible for merging results of different plugins is `PaltaPurchases`. It has several private helper methods that handle most of the logic to call all plugins and manage collection of async results:
 ```
-PBPurchasePlugin(apiKey: "<API_KEY>", environment: URL(string: "https://api.example.com")!)
-```
-### RevenueCat
-To setup RevenueCat, you need only its API key:
-```
-RCPurchasePlugin(apiKey: "<API_KEY>")
-```
-### Palta legacy web payments
-You need your app's web subscription id:
-```
-PBLegacyPurchasePlugin(webSubscriptionID: "")
-```
-
-## Geting started
-First, you need to initialize the SDK with all plugins that you're going to use:
-```
-PaltaPurchases.instance.setup(with: [
-    PBPurchasePlugin(...),
-    RCPurchasePlugin(...),
-    PBLegacyPurchasePlugin(...)
-])
+    private func start<T>(
+        completion: @escaping (Result<T, Error>) -> Void,
+        execute: @escaping (PurchasePlugin, @escaping (PurchasePluginResult<T, Error>) -> Void) -> Void
+    )
+    
+    private func with<T>(
+        _ plugin: PurchasePlugin,
+        completion: @escaping (Result<T, Error>) -> Void,
+        execute: @escaping (PurchasePlugin, @escaping (PurchasePluginResult<T, Error>) -> Void) -> Void
+    )
+    
+    private func callAndCollect<T>(
+        call: (PurchasePlugin, @escaping (Result<T, Error>) -> Void) -> Void,
+        completion: @escaping (Result<[T], Error>) -> Void
+    )
+    
+    private func callAndCollectPaidFeatures(
+        to completion: @escaping (Result<PaidFeatures, Error>) -> Void,
+        call: (PurchasePlugin, @escaping (Result<PaidFeatures, Error>) -> Void) -> Void
+    )
 ```
 
-As soon as you know your user ID, you perform login:
+When implementing plugin, you can use `PurchasePluginResult` enitity as a return type. It has 3 possible values:
 ```
-PaltaPurchases.instance.logIn(appUserId: .string("some-id"), completion: { _ in })
-```
-
-When user logs out, you call logout method:
-```
- PaltaPurchases.instance.logOut()
-```
-
-You can also hide `PaltaPurchases` instance under `PaltaPurchasesProtocol`.
-
-## Checking user's access and subscriptions
-There's 2 ways of checking users access. First, you can checkout all info about the user at once, including both enabled features and payment info about them. Second, you can checkout only enabled features and get subscriptions information separately.
-### Getting all at once
-```
-PaltaPurchases.instance.getPaidFeatures { result in
-    switch result {
-    case .success(let paidFeatures):
-        print(paidFeatures.hasActiveFeature(with: "premium"))
-        print(paidFeatures.activeFeatures.first?.pricePointIdent)
-        
-    case .failure(let error):
-        print(error)
-    }
+public enum PurchasePluginResult<Success, Failure: Error> {
+    /// Operation successfuly completed.
+    case success(Success)
+    
+    /// Plugin handled input, but operation failed with error. Pass failure to user.
+    case failure(Failure)
+    
+    /// Passed input can't be handled by this plugin. Pass control to next plugin.
+    case notSupported
 }
 ```
+It is crucial to return `.notSupported` for operations that should be handled by only one plugin. For example, when we purchase a product, it is a product from **one** of the systems we use and all other plugins must return `.notSupported` in order to help `PaltaPurchases` find the right one.
 
-### Getting features info only
-```
-PaltaPurchases.instance.getFeatures { result in
-    switch result {
-    case .success(let features):
-        print(paidFeatures.hasActiveFeature(with: "premium"))
-        
-    case .failure(let error):
-        print(error)
-    }
-}
-```
+## Typical feature structure
+![Typical feature structure](feature-structure.jpg)
 
-### Getting subscriptions info only
-```
-PaltaPurchases.instance.getSubscriptions { result in
-    switch result {
-    case .success(let subscriptions):
-        print(subscriptions.first?.state)
-        print(subscriptions.first?.price)
-        
-    case .failure(let error):
-        print(error)
-    }
-}
-```
+### Public interfaces
+You setup public interfaces for the feature by creating public data structures and declaring methods in `PaltaPurchasesProtocol`. Public structures are contained in `Sources/PaltaPayments/Public/Data`.
 
-## Selling new subscriptions and products
-### Getting available subscriptions and products
-You can retrieve both App Store products (through RevenueCat) and Palta price points (through MPP).
-```
-PaltaPurchases.instance.getProductsAndPricePoints(with: ["some_id"]) { result in
-    switch result {
-    case .success(let products):
-        print(products)
-        
-    case .failure(let error):
-        print(error)
-    }
-}
-```
-### Performing a purchase
-You can sell only App Store products with this SDK. Payments through Palta MPP should be made on web. If you attempt to pass an instance of `Product` corresponding to MPP's price point, you will get an error `PaymentsError.webPaymentsNotSupported`.
-```
-PaltaPurchases.instance.purchase(product, with: nil) { result in
-    switch result {
-    case .success(let purchase):
-        print(purchase.paidFeatures.hasActiveFeature(with: "name"))
-        
-    case .failure(let error):
-        print(error)
-    }
-}
-```
+### Public interface implementation
+`PaltaPurchases` has to conform to `PaltaPurchasesProtocol`, so you implement method that you declared. Implementation consists of checking that setup is finished (`checkSetupFinished()`) and calling all plugins with one of helper methods.
+You will need to declare necessary methods in `PurchasePlugin` protocol.
 
-You can also use `purchase2` method to get lightweight result without subscriptions info.
+### Implementing 3rd party plugins
+When implementing methods in 3rd party plugins, you usually call one of the 3rd party SDK methods. Then you implement an extension for 3rd party entities to transform them to our entities. For example, you can have a look at `StoreProduct+Product.swift` file.
 
-## Development
-See [development guide](DEVELOPMENT.md).
+### Implementing Palta plugin
+Implementing Palta plugin usually consists of following steps:
+
+1. You create a DTO representing your HTTP request payload (example: `GetFeaturesRequestPayload.swift`)
+2. You add new HTTP request case to `PaymentsHTTPRequest`
+3. You create a DTO representing your HTTP response payload. Usually, it is 2 DTOs: for response intself and for target entity. (example: `FeaturesResponse.swift` and `FeatureInternal.swift`)
+4. You create a service that calls backend via HTTP using all things you created in steps 1-3. Sometimes, you need a complex structure of services depending on each other to allow testing of all business logic.
+5. You add your service to DI container (see `PaymentsAssembly.swift`)
+6. Call your new service from `PBPurchasePlugin`
