@@ -13,7 +13,7 @@ Pod::Spec.new do |spec|
 
   spec.source_files = 'Sources/**/*.swift'
 
-  spec.dependency 'PaltaCore', '>= 3.2.0'
+  spec.dependency 'PaltaCore', '>= 3.2.2'
   spec.dependency 'RevenueCat', '~> 4.7.0'
 end
 

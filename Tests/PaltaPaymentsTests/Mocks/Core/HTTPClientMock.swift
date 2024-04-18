@@ -28,6 +28,17 @@ final class HTTPClientMock: HTTPClient {
         )
     }
 
-    func perform<T>(_ request: HTTPRequest, with completion: @escaping (Result<T, Error>) -> Void) where T : Decodable {
+    func perform<T: Decodable>(
+        _ request: HTTPRequest,
+        with completion: @escaping (Result<T, Error>) -> Void
+    ) {
+    }
+
+    func perform<SuccessResponse: Decodable, ErrorResponse: Decodable>(
+        _ request: HTTPRequest,
+        requestMiddleware: @escaping (URLRequest) -> Void,
+        responseMiddleware: @escaping (HTTPURLResponse?, Data?) -> Void,
+        with completion: @escaping (Result<SuccessResponse, NetworkErrorWithResponse<ErrorResponse>>) -> Void
+    ) {
     }
 }

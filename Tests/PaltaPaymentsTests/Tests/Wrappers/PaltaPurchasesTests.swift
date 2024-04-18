@@ -333,7 +333,13 @@ final class PaltaPurchasesTests: XCTestCase {
         mockPlugins[0].purchaseCompletion?(
             .success(SuccessfulPurchase(transaction: .inApp, paidFeatures: PaidFeatures()))
         )
-        
+
+        DispatchQueue.main.async { [mockPlugins] in
+            mockPlugins.forEach {
+                $0.getPaidFeaturesCompletion?(.success(PaidFeatures()))
+            }
+        }
+
         wait(for: [completionCalled], timeout: 0.1)
     }
     
@@ -381,7 +387,13 @@ final class PaltaPurchasesTests: XCTestCase {
         mockPlugins[2].purchaseCompletion?(
             .success(SuccessfulPurchase(transaction: .web, paidFeatures: PaidFeatures()))
         )
-        
+
+        DispatchQueue.main.async { [mockPlugins] in
+            mockPlugins.forEach {
+                $0.getPaidFeaturesCompletion?(.success(PaidFeatures()))
+            }
+        }
+
         wait(for: [completionCalled], timeout: 0.1)
     }
     
