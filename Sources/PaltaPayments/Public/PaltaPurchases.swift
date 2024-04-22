@@ -145,20 +145,30 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         _ completion: @escaping (Result<PromoOffer, Error>) -> Void
     ) {
         checkSetupFinished()
-    
-        start(completion: completion) { plugin, completion in
+
+        start(completion: { result, _ in completion(result) }) { plugin, completion in
             plugin.getPromotionalOffer(for: productDiscount, product: product, completion)
         }
     }
-    
+
     public func purchase(
         _ product: Product,
         with promoOffer: PromoOffer?,
         _ completion: @escaping (Result<SuccessfulPurchase, Error>) -> Void
     ) {
         checkSetupFinished()
-        
-        start(completion: completion) { plugin, completion in
+
+        typealias Res = Result<SuccessfulPurchase, Error>
+        let purchaseCompletion = { [self] (result: Res, usedPlugin: PurchasePlugin?) in
+            switch result {
+            case let .success(purchase):
+                postPurchase(purchase, usedPlugin: usedPlugin, completion)
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+
+        start(completion: purchaseCompletion) { plugin, completion in
             plugin.purchase(product, with: promoOffer, completion)
         }
     }
@@ -227,19 +237,19 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
     }
     
     public func cancelSubscription(with token: CancellationToken, completion: @escaping (Result<Void, Error>) -> Void) {
-        start(completion: completion) { plugin, completion in
+        start(completion: { result, _ in completion(result) }) { plugin, completion in
             plugin.cancelSubscription(with: token, completion: completion)
         }
     }
     
     public func sendRestoreLink(to email: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        start(completion: completion)  { plugin, completion in
+        start(completion: { result, _ in completion(result) })  { plugin, completion in
             plugin.sendRestoreLink(to: email, completion: completion)
         }
     }
     
     private func start<T>(
-        completion: @escaping (Result<T, Error>) -> Void,
+        completion: @escaping (Result<T, Error>, PurchasePlugin?) -> Void,
         execute: @escaping (PurchasePlugin, @escaping (PurchasePluginResult<T, Error>) -> Void) -> Void
     ) {
         guard let firstPlugin = plugins.first else {
@@ -251,7 +261,7 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
     
     private func with<T>(
         _ plugin: PurchasePlugin,
-        completion: @escaping (Result<T, Error>) -> Void,
+        completion: @escaping (Result<T, Error>, PurchasePlugin?) -> Void,
         execute: @escaping (PurchasePlugin, @escaping (PurchasePluginResult<T, Error>) -> Void) -> Void
     ) {
         execute(plugin) { [weak self, unowned plugin] pluginResult in
@@ -261,12 +271,12 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
             
             if let result = pluginResult.result {
                 DispatchQueue.main.async {
-                    completion(result)
+                    completion(result, plugin)
                 }
             } else if let nextPlugin = self.plugins.nextElement(after: { $0 === plugin }) {
                 self.with(nextPlugin, completion: completion, execute: execute)
             } else {
-                completion(.failure(PaymentsError.sdkError(.noSuitablePlugin)))
+                completion(.failure(PaymentsError.sdkError(.noSuitablePlugin)), nil)
             }
         }
     }
@@ -279,6 +289,7 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
     
     private func callAndCollect<T>(
         call: (PurchasePlugin, @escaping (Result<T, Error>) -> Void) -> Void,
+        excluding excludedPlugins: [PurchasePlugin] = [],
         completion: @escaping (Result<[T], Error>) -> Void
     ) {
         var values: [T] = []
@@ -287,24 +298,28 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         let lock = NSRecursiveLock()
         let group = DispatchGroup()
         
-        plugins.forEach { plugin in
-            group.enter()
-            call(plugin) { result in
-                lock.lock()
-                
-                switch result {
-                case .success(let value):
-                    values.append(value)
-                    
-                case .failure(let err):
-                    error = error ?? err
-                }
-                
-                lock.unlock()
-                group.leave()
+        plugins
+            .filter { plugin in
+                !excludedPlugins.contains(where: { $0 === plugin })
             }
-        }
-        
+            .forEach { plugin in
+                group.enter()
+                call(plugin) { result in
+                    lock.lock()
+
+                    switch result {
+                    case .success(let value):
+                        values.append(value)
+
+                    case .failure(let err):
+                        error = error ?? err
+                    }
+
+                    lock.unlock()
+                    group.leave()
+                }
+            }
+
         group.notify(queue: .main) {
             if let error = error {
                 completion(.failure(error))
@@ -331,9 +346,10 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
     
     private func callAndCollectPaidFeatures(
         to completion: @escaping (Result<PaidFeatures, Error>) -> Void,
+        excluding excludedPlugins: [PurchasePlugin] = [],
         call: (PurchasePlugin, @escaping (Result<PaidFeatures, Error>) -> Void) -> Void
     ) {
-        callAndCollect(call: call) { result in
+        callAndCollect(call: call, excluding: excludedPlugins) { result in
             completion(
                 result.map {
                     $0.reduce(PaidFeatures()) {
@@ -342,6 +358,36 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
                 }
             )
         }
+    }
+
+    /// Here we combine recently purchased features with the ones purchased before in other plugins
+    private func postPurchase(
+        _ purchase: SuccessfulPurchase,
+        usedPlugin: PurchasePlugin?,
+        _ completion: @escaping (Result<SuccessfulPurchase, Error>) -> Void
+    ) {
+        callAndCollectPaidFeatures(
+            to: { result in
+                switch result {
+                case .success(let paidFeatures):
+                    completion(
+                        .success(
+                            SuccessfulPurchase(
+                                transaction: purchase.transaction,
+                                paidFeatures: purchase.paidFeatures.merged(with: paidFeatures)
+                            )
+                        )
+                    )
+                case .failure:
+                    // Anyway, purchase itself was successful
+                    completion(.success(purchase))
+                }
+            },
+            excluding: [usedPlugin].compactMap { $0 },
+            call: { plugin, completion in
+                plugin.getPaidFeatures(completion)
+            }
+        )
     }
 }
 
