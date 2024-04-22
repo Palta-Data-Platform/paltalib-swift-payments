@@ -173,14 +173,6 @@ public final class PaltaPurchases: PaltaPurchasesProtocol {
         }
     }
     
-    public func purchase2(
-        _ product: Product,
-        with promoOffer: PromoOffer?,
-        _ completion: @escaping (Result<SuccessfulPurchase2, Error>) -> Void
-    ) {
-        fatalError()
-    }
-    
     public func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void) {
         checkSetupFinished()
         

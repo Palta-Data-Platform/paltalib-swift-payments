@@ -55,12 +55,6 @@ public protocol PaltaPurchasesProtocol: AnyObject {
         _ completion: @escaping (Result<SuccessfulPurchase, Error>) -> Void
     )
     
-    func purchase2(
-        _ product: Product,
-        with promoOffer: PromoOffer?,
-        _ completion: @escaping (Result<SuccessfulPurchase2, Error>) -> Void
-    )
-    
     func restorePurchases(completion: @escaping (Result<PaidFeatures, Error>) -> Void)
     
     func restorePurchases(completion: @escaping (Result<Features, Error>) -> Void)
