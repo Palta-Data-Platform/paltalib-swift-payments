@@ -9,30 +9,14 @@ import Foundation
 import RevenueCat
 
 extension CustomerInfo {
-    private var nonSubscriptionFeatures: [Feature] {
-        nonSubscriptions.map {
-            Feature(
-                name: $0.productIdentifier,
-                startDate: $0.purchaseDate,
-                endDate: nil
-            )
-        }
-    }
-    
-    private var subscriptionFeatures: [Feature] {
-        entitlements.all.values.map {
+    var features: Features {
+        Features(features: entitlements.all.values.map {
             Feature(
                 name: $0.identifier,
                 startDate: $0.latestPurchaseDate ?? Date(timeIntervalSince1970: 0),
                 endDate: $0.expirationDate
             )
-        }
-    }
-    
-    var features: Features {
-        Features(
-            features: subscriptionFeatures + nonSubscriptionFeatures
-        )
+        })
     }
 }
 
