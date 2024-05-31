@@ -18,6 +18,7 @@ extension PaidFeature {
                     .subscription(
                         .init(
                             current: Subscription(
+                                id: UUID(), 
                                 startDate: startDate,
                                 endDate: endDate,
                                 cancellationDate: nil,

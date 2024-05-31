@@ -36,6 +36,7 @@ extension CustomerInfo {
                 paymentType: .subscription(
                     .init(
                         current: .init(
+                            id: nil,
                             startDate: $0.latestPurchaseDate ?? Date(timeIntervalSince1970: 0),
                             endDate: $0.expirationDate ?? Date(timeIntervalSince1970: 0),
                             cancellationDate: $0.unsubscribeDetectedAt,

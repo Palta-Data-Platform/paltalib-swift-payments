@@ -21,6 +21,8 @@ public struct PaidFeature: Hashable {
     }
     
     public struct Subscription: Hashable {
+        /// Subscription id is available for Palta MPP subscriptions only
+        public let id: UUID?
         public let startDate: Date
         public let endDate: Date
         public let cancellationDate: Date?

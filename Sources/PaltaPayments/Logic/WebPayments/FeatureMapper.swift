@@ -52,6 +52,7 @@ extension SubscriptionInternal {
     func subscriptions(subscriptions: [UUID: SubscriptionInternal]) -> PaidFeature.Subscriptions {
         .init(
             current: .init(
+                id: id, 
                 startDate: currentPeriodStartAt,
                 endDate: currentPeriodEndAt,
                 cancellationDate: canceledAt,
