@@ -28,8 +28,12 @@ extension CustomerInfo {
     }
     
     private func subscriptionFeatures(userId: String) -> [PaidFeature] {
-        entitlements.all.values.map {
-            PaidFeature(
+        entitlements.all.values.compactMap {
+            guard let endDate = $0.expirationDate else {
+                return nil
+            }
+            
+            return PaidFeature(
                 name: $0.identifier,
                 productIdentifier: $0.productIdentifier,
                 pricePointIdent: nil,
@@ -38,7 +42,7 @@ extension CustomerInfo {
                         current: .init(
                             id: nil,
                             startDate: $0.latestPurchaseDate ?? Date(timeIntervalSince1970: 0),
-                            endDate: $0.expirationDate ?? Date(timeIntervalSince1970: 0),
+                            endDate: endDate,
                             cancellationDate: $0.unsubscribeDetectedAt,
                             cancellationToken: $0.store == .promotional ? CancellationToken(pluginId: "web-laegacy", internalId: userId) : nil,
                             isTrial: $0.periodType == .trial,
