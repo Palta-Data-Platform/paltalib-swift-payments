@@ -31,7 +31,9 @@ extension CustomerInfo {
                             cancellationDate: entitlement.unsubscribeDetectedAt,
                             cancellationToken: entitlement.store == .promotional ? CancellationToken(pluginId: "web-laegacy", internalId: userId) : nil,
                             isTrial: entitlement.periodType == .trial,
-                            isIntroductory: entitlement.periodType == .intro
+                            isIntroductory: entitlement.periodType == .intro,
+                            price: nil,
+                            currencyCode: nil
                         ),
                         next: nil
                     )

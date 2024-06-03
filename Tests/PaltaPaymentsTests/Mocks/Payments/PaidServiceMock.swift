@@ -24,7 +24,10 @@ extension PaidFeature {
                                 cancellationDate: nil,
                                 cancellationToken: nil,
                                 isTrial: false,
-                                isIntroductory: false),
+                                isIntroductory: false,
+                                price: nil,
+                                currencyCode: nil
+                            ),
                             next: nil
                         )
                     )
