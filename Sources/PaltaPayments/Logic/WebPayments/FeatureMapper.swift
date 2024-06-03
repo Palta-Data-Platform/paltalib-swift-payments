@@ -60,7 +60,8 @@ extension SubscriptionInternal {
                 isTrial: tags.contains(.trial),
                 isIntroductory: false,
                 price: Decimal(string: pricePoint.nextTotalPrice, locale: Locale(identifier: "en-US")),
-                currencyCode: pricePoint.currencyCode
+                currencyCode: pricePoint.currencyCode, 
+                subscriptionPeriod: pricePoint.subscriptionPeriod
             ),
             next: nextSubscriptionId.flatMap { subscriptions[$0] }?.subscriptions(subscriptions: [:]).current
         )

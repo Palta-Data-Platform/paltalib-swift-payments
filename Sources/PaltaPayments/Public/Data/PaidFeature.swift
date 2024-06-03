@@ -36,6 +36,8 @@ public struct PaidFeature: Hashable {
         public let price: Decimal?
         /// Price information is available for Palta MPP subscriptions only
         public let currencyCode: String?
+        /// Subscription period information is available for Palta MPP subscriptions only
+        public let subscriptionPeriod: SubscriptionPeriod?
     }
     
     public struct Subscriptions: Hashable {

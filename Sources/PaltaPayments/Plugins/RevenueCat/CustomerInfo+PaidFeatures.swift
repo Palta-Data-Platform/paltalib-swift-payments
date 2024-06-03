@@ -33,7 +33,8 @@ extension CustomerInfo {
                             isTrial: entitlement.periodType == .trial,
                             isIntroductory: entitlement.periodType == .intro,
                             price: nil,
-                            currencyCode: nil
+                            currencyCode: nil,
+                            subscriptionPeriod: nil
                         ),
                         next: nil
                     )
