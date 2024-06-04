@@ -73,7 +73,7 @@ final class PublicSubscriptionsServiceImpl: PublicSubscriptionsService {
             endDate: subscription.currentPeriodEndAt,
             state: state,
             type: .web,
-            price: Decimal(string: subscription.pricePoint.nextTotalPrice, locale: Locale(identifier: "en-US")) ?? 0,
+            price: subscription.pricePoint.nextTotalPrice.flatMap { Decimal(string: $0, locale: Locale(identifier: "en-US")) } ?? 0,
             currencyCode: subscription.pricePoint.currencyCode,
             providedFeatures: subscription.pricePoint.services.map { $0.featureIdent },
             next: nil

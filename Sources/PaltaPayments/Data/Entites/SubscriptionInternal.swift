@@ -25,9 +25,12 @@ struct SubscriptionInternal: Decodable, Equatable {
         let ident: String
         let services: [Feature]
         let currencyCode: String
-        let nextTotalPrice: String
+        let nextTotalPrice: String?
         let nextPeriodValue: Int?
         let nextPeriodType: String?
+        let introTotalPrice: String
+        let introPeriodValue: Int?
+        let introPeriodType: String?
     }
     
     struct Feature: Decodable, Equatable {
@@ -56,6 +59,14 @@ extension SubscriptionInternal.PricePoint {
         }
 
         return SubscriptionPeriod(value: nextPeriodValue, unit: unit)
+    }
+
+    var introSubscriptionPeriod: SubscriptionPeriod? {
+        guard let introPeriodType, let introPeriodValue, let unit = mapPeriodType(introPeriodType) else {
+            return nil
+        }
+
+        return SubscriptionPeriod(value: introPeriodValue, unit: unit)
     }
 
     private func mapPeriodType(_ type: String) -> SubscriptionPeriod.Unit? {

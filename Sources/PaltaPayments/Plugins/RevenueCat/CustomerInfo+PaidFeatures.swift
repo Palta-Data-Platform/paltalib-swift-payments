@@ -34,7 +34,9 @@ extension CustomerInfo {
                             isIntroductory: entitlement.periodType == .intro,
                             price: nil,
                             currencyCode: nil,
-                            subscriptionPeriod: nil
+                            subscriptionPeriod: nil,
+                            introPrice: nil,
+                            introSubscriptionPeriod: nil
                         ),
                         next: nil
                     )

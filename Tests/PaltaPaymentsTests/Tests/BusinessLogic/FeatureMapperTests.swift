@@ -69,7 +69,12 @@ final class FeatureMapperTests: XCTestCase {
                     ident: "",
                     services: [],
                     currencyCode: "",
-                    nextTotalPrice: ""
+                    nextTotalPrice: "",
+                    nextPeriodValue: nil,
+                    nextPeriodType: nil,
+                    introTotalPrice: "",
+                    introPeriodValue: nil,
+                    introPeriodType: nil
                 ),
                 tags: [.trial]
             )
@@ -112,7 +117,12 @@ final class FeatureMapperTests: XCTestCase {
                     ident: "",
                     services: [],
                     currencyCode: "",
-                    nextTotalPrice: ""
+                    nextTotalPrice: "",
+                    nextPeriodValue: nil,
+                    nextPeriodType: nil,
+                    introTotalPrice: "",
+                    introPeriodValue: nil,
+                    introPeriodType: nil
                 ),
                 tags: []
             )
@@ -158,7 +168,12 @@ final class FeatureMapperTests: XCTestCase {
                     ident: "",
                     services: [],
                     currencyCode: "",
-                    nextTotalPrice: ""
+                    nextTotalPrice: "",
+                    nextPeriodValue: nil,
+                    nextPeriodType: nil,
+                    introTotalPrice: "",
+                    introPeriodValue: nil,
+                    introPeriodType: nil
                 ),
                 tags: []
             ),
@@ -174,7 +189,12 @@ final class FeatureMapperTests: XCTestCase {
                     ident: "",
                     services: [],
                     currencyCode: "",
-                    nextTotalPrice: ""
+                    nextTotalPrice: "",
+                    nextPeriodValue: nil,
+                    nextPeriodType: nil,
+                    introTotalPrice: "",
+                    introPeriodValue: nil,
+                    introPeriodType: nil
                 ),
                 tags: []
             )

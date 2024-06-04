@@ -26,7 +26,10 @@ extension PaidFeature {
                                 isTrial: false,
                                 isIntroductory: false,
                                 price: nil,
-                                currencyCode: nil
+                                currencyCode: nil,
+                                subscriptionPeriod: nil,
+                                introPrice: nil,
+                                introSubscriptionPeriod: nil
                             ),
                             next: nil
                         )

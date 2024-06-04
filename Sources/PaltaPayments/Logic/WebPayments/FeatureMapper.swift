@@ -59,9 +59,11 @@ extension SubscriptionInternal {
                 cancellationToken: nil,
                 isTrial: tags.contains(.trial),
                 isIntroductory: false,
-                price: Decimal(string: pricePoint.nextTotalPrice, locale: Locale(identifier: "en-US")),
-                currencyCode: pricePoint.currencyCode, 
-                subscriptionPeriod: pricePoint.subscriptionPeriod
+                price: pricePoint.nextTotalPrice.flatMap { Decimal(string: $0, locale: Locale(identifier: "en-US")) },
+                currencyCode: pricePoint.currencyCode,
+                subscriptionPeriod: pricePoint.subscriptionPeriod,
+                introPrice: Decimal(string: pricePoint.introTotalPrice, locale: Locale(identifier: "en-US")),
+                introSubscriptionPeriod: pricePoint.introSubscriptionPeriod
             ),
             next: nextSubscriptionId.flatMap { subscriptions[$0] }?.subscriptions(subscriptions: [:]).current
         )
